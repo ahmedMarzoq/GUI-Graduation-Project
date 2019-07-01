@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="486.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.FXMLDocumentController">
+    <children>
+      <TabPane cacheHint="SCALE" nodeOrientation="RIGHT_TO_LEFT" prefHeight="353.0" prefWidth="527.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="الشعب">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ComboBox fx:id="speCombobox" layoutX="-13.0" layoutY="27.0" onAction="#speComboBoxAction" prefWidth="150.0" promptText="التخصص" AnchorPane.leftAnchor="15.0" />
+                        
+                        <ComboBox fx:id="levelsComboBox" disable="true" layoutX="188.0" layoutY="27.0" onAction="#levelsComboBoxAction" prefWidth="150.0" promptText="المستوى" />
+                        <HBox alignment="CENTER" layoutX="152.0" layoutY="216.0" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
+                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
+                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
+                              <Button fx:id="scedButton" disable="true" mnemonicParsing="false" prefWidth="115.0" text="جدولة" />
+                           </children>
+                        </HBox>
+                        <TableView layoutX="277.0" layoutY="59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="الرمز" />
+                            <TableColumn prefWidth="75.0" text="اسم المادة" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="الغرف">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <RadioButton contentDisplay="RIGHT" layoutX="203.0" layoutY="76.0" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="نعم" />
+                        <RadioButton layoutX="150.0" layoutY="76.0" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="لا" />
+                        <ToggleButton layoutX="203.0" layoutY="122.0" mnemonicParsing="false" text="ToggleButton" />
+                        <TableView layoutX="65.0" layoutY="195.0" prefHeight="81.0" prefWidth="269.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                        <SplitMenuButton layoutX="55.0" layoutY="28.0" mnemonicParsing="false" text="SplitMenuButton">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </SplitMenuButton>
+                        <ChoiceBox layoutX="45.0" layoutY="110.0" prefWidth="150.0" />
+                        <ChoiceBox layoutX="340.0" layoutY="72.0" prefWidth="150.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+    </children>
+</AnchorPane>
