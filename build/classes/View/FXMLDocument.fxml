@@ -27,10 +27,14 @@
                               <Button fx:id="scedButton" disable="true" mnemonicParsing="false" prefWidth="115.0" text="جدولة" />
                            </children>
                         </HBox>
-                        <TableView layoutX="277.0" layoutY="59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
+                        <TableView fx:id="mainTable" layoutX="277.0" layoutY="59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="الرمز" />
-                            <TableColumn prefWidth="75.0" text="اسم المادة" />
+                              <TableColumn fx:id="sectionNumber" prefWidth="75.0" text="رقم الشعبة" />
+                            <TableColumn fx:id="courseId" prefWidth="75.0" text="الرمز" />
+                            <TableColumn fx:id="courseName" prefWidth="210.0" text="اسم المادة" />
+                              <TableColumn fx:id="teacherName" prefWidth="219.0" text="المدرس" />
+                              <TableColumn fx:id="gender" prefWidth="109.0" text="نوع الطلاب" />
+                              <TableColumn fx:id="size" prefWidth="61.0" text="العدد" />
                           </columns>
                         </TableView>
                      </children>

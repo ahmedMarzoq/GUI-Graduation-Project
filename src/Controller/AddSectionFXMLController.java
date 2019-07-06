@@ -29,6 +29,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -57,7 +58,8 @@ public class AddSectionFXMLController implements Initializable {
     private ComboBox courseComboBox, teacherComboBox, genderComboBox;
     @FXML
     private TextField sectionNumberTxt, sectionstdNumberTxt;
-
+    
+    
     @FXML
     private void courseComboBoxAction(ActionEvent event) throws SQLException {
         //setOptionsCourseComboBox();
