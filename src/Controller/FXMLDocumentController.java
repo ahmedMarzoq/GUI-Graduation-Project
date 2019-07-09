@@ -60,6 +60,14 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TableColumn teacherName;
     @FXML private TableColumn gender;
     @FXML private TableColumn size;
+//========================================================================================
+//                               **** Run Algorithm ****    
+//========================================================================================
+     @FXML
+    private void algorithmButtonAction(ActionEvent event) {
+         System.out.println("Algorithm");
+    }
+//========================================================================================
 
     @FXML
     private void addButtonAction(ActionEvent event) throws SQLException {

@@ -24,7 +24,7 @@
                               <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
-                              <Button fx:id="scedButton" disable="true" mnemonicParsing="false" prefWidth="115.0" text="جدولة" />
+                              <Button fx:id="scedButton" disable="true" mnemonicParsing="false" onAction="#algorithmButtonAction" prefWidth="115.0" text="جدولة" />
                            </children>
                         </HBox>
                         <TableView fx:id="mainTable" layoutX="277.0" layoutY="59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
