@@ -198,7 +198,7 @@ public class AddSectionFXMLController implements Initializable {
             course.setLevel_number(resultSet.getInt("level_number"));
             course.setCredit_hours(resultSet.getInt("credit_hours"));
             course.setActual_hours(resultSet.getInt("actual_hours"));
-            course.setCan_devide(resultSet.getBoolean("can_devide"));
+            course.setCan_devide(resultSet.getInt("can_devide"));
 
             courseList.add(course);
         }

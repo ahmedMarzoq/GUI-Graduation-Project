@@ -44,28 +44,42 @@ import javafx.stage.Stage;
  */
 public class FXMLDocumentController implements Initializable {
 
-    private int level, spech;
+    private int level, spech, semester;
     DbCall call = DbCall.getDbCall();
     ArrayList<Levels> levelsList = new ArrayList<>();
     ArrayList<Majors> majorsList = new ArrayList<>();
 
-    @FXML private ComboBox speCombobox;
-    @FXML private ComboBox levelsComboBox;
-    @FXML private Button addButton;
-    @FXML private Button scedButton;
-    @FXML private TableView mainTable;
-    @FXML private TableColumn sectionNumber;
-    @FXML private TableColumn courseId;
-    @FXML private TableColumn courseName;
-    @FXML private TableColumn teacherName;
-    @FXML private TableColumn gender;
-    @FXML private TableColumn size;
+    @FXML
+    private ComboBox speCombobox;
+    @FXML
+    private ComboBox levelsComboBox;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button scedButton;
+    @FXML
+    private TableView mainTable;
+    @FXML
+    private TableColumn sectionNumber;
+    @FXML
+    private TableColumn courseId;
+    @FXML
+    private TableColumn courseName;
+    @FXML
+    private TableColumn teacherName;
+    @FXML
+    private TableColumn gender;
+    @FXML
+    private TableColumn size;
+    @FXML
+    private ComboBox semesterComboBox;
 //========================================================================================
 //                               **** Run Algorithm ****    
 //========================================================================================
-     @FXML
+
+    @FXML
     private void algorithmButtonAction(ActionEvent event) {
-         System.out.println("Algorithm");
+        System.out.println("Algorithm");
     }
 //========================================================================================
 
@@ -97,8 +111,18 @@ public class FXMLDocumentController implements Initializable {
     private void levelsComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
         scedButton.setDisable(false);
+        semesterComboBox.setDisable(false);
         level = levelsComboBox.getSelectionModel().getSelectedIndex();
-        setValuesMainTable((level+1),(spech+1));
+//        setValuesMainTable((level+1),(spech+1));
+        System.out.println(level);
+    }
+
+    @FXML
+    private void semesterComboBoxAction(ActionEvent event) throws SQLException {
+        addButton.setDisable(false);
+        scedButton.setDisable(false);
+        semester = semesterComboBox.getSelectionModel().getSelectedIndex();
+        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
         System.out.println(level);
     }
 
@@ -107,8 +131,9 @@ public class FXMLDocumentController implements Initializable {
         try {
             setOptionsSpeCombobox();
             setOptionslevelsCombobox();
+            setOptionsSemesterComboBox();
             mainTable.setPlaceholder(new Label("لا يوجد شعب مضافة"));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -182,19 +207,29 @@ public class FXMLDocumentController implements Initializable {
         }
         levelsComboBox.setItems(data);
     }
+    
+    private void setOptionsSemesterComboBox() throws SQLException {
+        ObservableList<String> data = FXCollections.observableArrayList("الفصل الاول", "الفصل الثاني"); //List of String
+        semesterComboBox.setItems(data);
+    }
 
-    private void setValuesMainTable(int level,int major) throws SQLException {
-        String g="ذكر";
+    private void setValuesMainTable(int level, int major ,int semester) throws SQLException {
+        System.out.println("smester : "+semester);
+        String g = "ذكر";
         ObservableList<sectionTable> data = FXCollections.observableArrayList();
         ResultSet resultSet;
         resultSet = call.getExecuteQuery(
-                "SELECT sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '"+level+"' and courses.major_id = '"+major+"' ");
+                "SELECT sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' ");
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
 //            System.out.println(resultSet.getInt(1)+resultSet.getString(2)+resultSet.getString(3)+resultSet.getString(4)+resultSet.getInt(5)+resultSet.getInt(6));
-            if(resultSet.getInt(6)==1)g="ذكر";else g="انثى";
-            sectionTable s = new sectionTable(resultSet.getInt(1),resultSet.getInt(5),resultSet.getString(3) ,resultSet.getString(2) , resultSet.getString(4), g);
+            if (resultSet.getInt(6) == 1) {
+                g = "ذكر";
+            } else {
+                g = "انثى";
+            }
+            sectionTable s = new sectionTable(resultSet.getInt(1), resultSet.getInt(5), resultSet.getString(3), resultSet.getString(2), resultSet.getString(4), g);
             data.add(s);
 //            for (int i = 1; i <= columnsNumber; i++) {
 //                if (i > 1) {
@@ -212,12 +247,12 @@ public class FXMLDocumentController implements Initializable {
 //    @FXML private TableColumn gender;
 //    @FXML private TableColumn size;
         mainTable.setItems(data);
-        sectionNumber.setCellValueFactory( new PropertyValueFactory<>("sectionNum") );
-        courseId.setCellValueFactory( new PropertyValueFactory<>("courseId") );
-        courseName.setCellValueFactory( new PropertyValueFactory<>("courseName") );
-        teacherName.setCellValueFactory( new PropertyValueFactory<>("teacherName") );
-        gender.setCellValueFactory( new PropertyValueFactory<>("studentGender") );
-        size.setCellValueFactory( new PropertyValueFactory<>("size") );
+        sectionNumber.setCellValueFactory(new PropertyValueFactory<>("sectionNum"));
+        courseId.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+        courseName.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        teacherName.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+        gender.setCellValueFactory(new PropertyValueFactory<>("studentGender"));
+        size.setCellValueFactory(new PropertyValueFactory<>("size"));
 //        System.out.println(Arrays.asList(data.toString()));
 //        ObservableList<sectionTable> data = FXCollections.observableArrayList(); //List of String
 //        ArrayList<Levels> a = getLevels(call);

@@ -37,6 +37,7 @@
                               <TableColumn fx:id="size" prefWidth="61.0" text="العدد" />
                           </columns>
                         </TableView>
+                        <ComboBox fx:id="semesterComboBox" disable="true" layoutX="365.0" layoutY="27.0" onAction="#semesterComboBoxAction" prefWidth="150.0" promptText="الفصل الدراسي" />
                      </children>
                   </AnchorPane>
             </content>

@@ -5,12 +5,14 @@ public class Course {
     
     private int id;
     private String name;
+    private int type;
+    private int major_id;
     private int level_number;
     private int semester;
     private int course_number;
     private int credit_hours ;
     private int actual_hours;
-    private boolean can_devide;
+    private int can_devide;
 
     public int getId() {
         return id;
@@ -26,6 +28,22 @@ public class Course {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getMajor_id() {
+        return major_id;
+    }
+
+    public void setMajor_id(int major_id) {
+        this.major_id = major_id;
     }
 
     public int getLevel_number() {
@@ -68,11 +86,11 @@ public class Course {
         this.actual_hours = actual_hours;
     }
 
-    public boolean getCan_devide() {
+    public int getCan_devide() {
         return can_devide;
     }
 
-    public void setCan_devide(boolean can_devide) {
+    public void setCan_devide(int can_devide) {
         this.can_devide = can_devide;
     }
      
