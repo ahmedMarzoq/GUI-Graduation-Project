@@ -29,6 +29,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -58,6 +60,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button scedButton;
     @FXML
+    private Button deleteButton;
+    @FXML
     private TableView mainTable;
     @FXML
     private TableColumn sectionNumber;
@@ -73,12 +77,29 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn size;
     @FXML
     private ComboBox semesterComboBox;
+
+    @FXML
+    private void deleteButtonAction(ActionEvent event) {
+        ObservableList<sectionTable> s =  mainTable.getSelectionModel().getSelectedItems();
+        if(!s.isEmpty()){
+            System.out.println(s.get(0).getId());
+            int id = s.get(0).getId();
+            mainTable.getItems().removeAll( mainTable.getSelectionModel().getSelectedItems() );
+            int f = call.getExecuteUpdate("DELETE FROM sections WHERE id = '"+id+"'");
+            if(f==-1)new Alert(AlertType.WARNING, "حصل خطا !").show();
+            else new Alert(AlertType.INFORMATION, "تمت العملية بنجاح").show();
+        }else{
+            new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
+        }
+        
+    }
 //========================================================================================
 //                               **** Run Algorithm ****    
 //========================================================================================
 
     @FXML
     private void algorithmButtonAction(ActionEvent event) {
+        new Alert(AlertType.INFORMATION, "Name, Role and Email fields cannot be empty!").show();
         System.out.println("Algorithm");
     }
 //========================================================================================
@@ -121,6 +142,7 @@ public class FXMLDocumentController implements Initializable {
     private void semesterComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
         scedButton.setDisable(false);
+        deleteButton.setDisable(false);
         semester = semesterComboBox.getSelectionModel().getSelectedIndex();
         setValuesMainTable((level + 1), (spech + 1), (semester + 1));
         System.out.println(level);
@@ -207,29 +229,29 @@ public class FXMLDocumentController implements Initializable {
         }
         levelsComboBox.setItems(data);
     }
-    
+
     private void setOptionsSemesterComboBox() throws SQLException {
         ObservableList<String> data = FXCollections.observableArrayList("الفصل الاول", "الفصل الثاني"); //List of String
         semesterComboBox.setItems(data);
     }
 
-    private void setValuesMainTable(int level, int major ,int semester) throws SQLException {
-        System.out.println("smester : "+semester);
+    private void setValuesMainTable(int level, int major, int semester) throws SQLException {
+        System.out.println("smester : " + semester);
         String g = "ذكر";
         ObservableList<sectionTable> data = FXCollections.observableArrayList();
         ResultSet resultSet;
         resultSet = call.getExecuteQuery(
-                "SELECT sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' ");
+                "SELECT sections.id,sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' ");
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
 //            System.out.println(resultSet.getInt(1)+resultSet.getString(2)+resultSet.getString(3)+resultSet.getString(4)+resultSet.getInt(5)+resultSet.getInt(6));
-            if (resultSet.getInt(6) == 1) {
+            if (resultSet.getInt(7) == 1) {
                 g = "ذكر";
             } else {
                 g = "انثى";
             }
-            sectionTable s = new sectionTable(resultSet.getInt(1), resultSet.getInt(5), resultSet.getString(3), resultSet.getString(2), resultSet.getString(4), g);
+            sectionTable s = new sectionTable(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(6), resultSet.getString(4), resultSet.getString(3), resultSet.getString(5), g);
             data.add(s);
 //            for (int i = 1; i <= columnsNumber; i++) {
 //                if (i > 1) {

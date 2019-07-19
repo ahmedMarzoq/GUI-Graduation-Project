@@ -10,10 +10,11 @@ package Model;
  * @author Flash Tech
  */
 public class sectionTable {
-    int sectionNum,size;
+    int id,sectionNum,size;
     String courseId,courseName,teacherName,studentGender;
 
-    public sectionTable(int sectionNum, int size, String courseId, String courseName, String teacherName, String studentGender) {
+    public sectionTable(int id, int sectionNum, int size, String courseId, String courseName, String teacherName, String studentGender) {
+        this.id = id;
         this.sectionNum = sectionNum;
         this.size = size;
         this.courseId = courseId;
@@ -23,6 +24,14 @@ public class sectionTable {
     }
 
     
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getSectionNum() {
         return sectionNum;
     }
@@ -70,5 +79,6 @@ public class sectionTable {
     public void setStudentGender(String studentGender) {
         this.studentGender = studentGender;
     }
+
     
 }

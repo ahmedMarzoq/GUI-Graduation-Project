@@ -19,11 +19,12 @@
                         <ComboBox fx:id="speCombobox" layoutX="-13.0" layoutY="27.0" onAction="#speComboBoxAction" prefWidth="150.0" promptText="التخصص" AnchorPane.leftAnchor="15.0" />
                         
                         <ComboBox fx:id="levelsComboBox" disable="true" layoutX="188.0" layoutY="27.0" onAction="#levelsComboBoxAction" prefWidth="150.0" promptText="المستوى" />
+                        <ComboBox fx:id="semesterComboBox" disable="true" layoutX="365.0" layoutY="27.0" onAction="#semesterComboBoxAction" prefWidth="150.0" promptText="الفصل الدراسي" />
                         <HBox alignment="CENTER" layoutX="152.0" layoutY="216.0" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
                               <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
+                              <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#deleteButtonAction" prefWidth="115.0" text="حذف" />
                               <Button fx:id="scedButton" disable="true" mnemonicParsing="false" onAction="#algorithmButtonAction" prefWidth="115.0" text="جدولة" />
                            </children>
                         </HBox>
@@ -37,7 +38,6 @@
                               <TableColumn fx:id="size" prefWidth="61.0" text="العدد" />
                           </columns>
                         </TableView>
-                        <ComboBox fx:id="semesterComboBox" disable="true" layoutX="365.0" layoutY="27.0" onAction="#semesterComboBoxAction" prefWidth="150.0" promptText="الفصل الدراسي" />
                      </children>
                   </AnchorPane>
             </content>
