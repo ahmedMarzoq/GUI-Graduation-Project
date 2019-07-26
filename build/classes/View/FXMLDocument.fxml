@@ -16,16 +16,23 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ComboBox fx:id="speCombobox" layoutX="-13.0" layoutY="27.0" onAction="#speComboBoxAction" prefWidth="150.0" promptText="التخصص" AnchorPane.leftAnchor="15.0" />
-                        
-                        <ComboBox fx:id="levelsComboBox" disable="true" layoutX="188.0" layoutY="27.0" onAction="#levelsComboBoxAction" prefWidth="150.0" promptText="المستوى" />
-                        <ComboBox fx:id="semesterComboBox" disable="true" layoutX="365.0" layoutY="27.0" onAction="#semesterComboBoxAction" prefWidth="150.0" promptText="الفصل الدراسي" />
                         <HBox alignment="CENTER" layoutX="152.0" layoutY="216.0" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
                               <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
+                              <Button fx:id="editButton" disable="true" mnemonicParsing="false" onAction="#editButtonAction" prefWidth="115.0" text="تعديل" />
                               <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#deleteButtonAction" prefWidth="115.0" text="حذف" />
                               <Button fx:id="scedButton" disable="true" mnemonicParsing="false" onAction="#algorithmButtonAction" prefWidth="115.0" text="جدولة" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="68.0" prefWidth="765.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ComboBox fx:id="speCombobox" onAction="#speComboBoxAction" prefWidth="150.0" promptText="التخصص" />
+                              
+                              <ComboBox fx:id="levelsComboBox" disable="true" onAction="#levelsComboBoxAction" prefWidth="150.0" promptText="المستوى" />
+                              <ComboBox fx:id="semesterComboBox" disable="true" onAction="#semesterComboBoxAction" prefWidth="150.0" promptText="الفصل الدراسي" />
+                              <ComboBox fx:id="genderComboBox" disable="true" onAction="#genderComboBoxAction" promptText="النوع" />
+                              <Button fx:id="refreshButton" disable="true" mnemonicParsing="false" onAction="#refreshButtonAction" text="تحديث" />
+                              <Button fx:id="emptyButton" disable="true" mnemonicParsing="false" onAction="#emptyButtonAction" text="إفراغ الحقول" />
                            </children>
                         </HBox>
                         <TableView fx:id="mainTable" layoutX="277.0" layoutY="59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
@@ -46,16 +53,17 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="mainTable1" layoutX="257.0" layoutY="145.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
+                        <TableView fx:id="mainTableSectionsTab" layoutX="257.0" layoutY="145.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
                            <columns>
-                              <TableColumn fx:id="sectionNumber1" prefWidth="75.0" text="رقم الشعبة" />
-                              <TableColumn fx:id="courseId1" prefWidth="75.0" text="الرمز" />
-                              <TableColumn fx:id="courseName1" prefWidth="210.0" text="اسم المادة" />
-                              <TableColumn prefWidth="75.0" text="السبت" />
-                              <TableColumn prefWidth="75.0" text="الاحد" />
-                              <TableColumn prefWidth="75.0" text="الاثنين" />
-                              <TableColumn prefWidth="75.0" text="الثلاثاء" />
-                              <TableColumn prefWidth="75.0" text="الاربعاء" />
+                              <TableColumn fx:id="sectionNumberSectionsTab" prefWidth="60.0" text="رقم الشعبة" />
+                              <TableColumn fx:id="courseNumberSectionsTab" prefWidth="78.0" text="الرمز" />
+                              <TableColumn fx:id="courseNameSectionsTab" prefWidth="155.0" text="اسم المادة" />
+                              <TableColumn fx:id="teacherNameSectionsTab" prefWidth="115.0" text="المدرس" />
+                              <TableColumn fx:id="saturdaySectionsTab" prefWidth="70.0" text="السبت" />
+                              <TableColumn fx:id="sundaySectionsTab" minWidth="0.0" prefWidth="70.0" text="الاحد" />
+                              <TableColumn fx:id="mondaySectionsTab" prefWidth="70.0" text="الاثنين" />
+                              <TableColumn fx:id="tusdaySectionsTab" prefWidth="70.0" text="الثلاثاء" />
+                              <TableColumn fx:id="wednesdaySectionsTab" prefWidth="70.0" text="الاربعاء" />
                            </columns>
                         </TableView>
                         <HBox alignment="CENTER" layoutX="85.0" layoutY="394.0" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -64,8 +72,16 @@
                               <Button fx:id="scedButton1" disable="true" mnemonicParsing="false" prefWidth="115.0" text="تصدير الكل" />
                            </children>
                         </HBox>
-                        <ComboBox fx:id="levelsComboBox1" disable="true" layoutX="208.0" layoutY="25.0" onAction="#levelsComboBoxAction" prefWidth="150.0" promptText="المستوى" />
-                        <ComboBox fx:id="speCombobox1" layoutX="14.0" layoutY="25.0" onAction="#speComboBoxAction" prefWidth="150.0" promptText="التخصص" AnchorPane.leftAnchor="15.0" />
+                        <HBox alignment="CENTER" layoutX="33.0" layoutY="-12.0" prefHeight="69.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ComboBox fx:id="spechComboBoxSectionsTab" onAction="#spechComboBoxSectionsTabAction" prefWidth="150.0" promptText="التخصص" />
+                              <ComboBox fx:id="levelComboBoxSectionsTab" disable="true" onAction="#levelComboBoxSectionsTabAction" prefWidth="150.0" promptText="المستوى" />
+                              <ComboBox fx:id="semesterComboBoxSectionsTab" disable="true" onAction="#semesterComboBoxSectionsTabAction" prefWidth="150.0" promptText="الفصل الدراسي" />
+                              <ComboBox fx:id="genderComboBoxSectionsTab" disable="true" onAction="#genderComboBoxSectionsTabAction" promptText="النوع" />
+                              <Button fx:id="refreshButtonFinalTableTab" disable="true" mnemonicParsing="false" onAction="#refreshButtonFinalTableTabAction" text="تحديث" />
+                              <Button fx:id="emptyButtonFinalTableTab" disable="true" mnemonicParsing="false" onAction="#emptyButtonFinalTableTabAction" text="إفراغ الحقول" />
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
             </content>

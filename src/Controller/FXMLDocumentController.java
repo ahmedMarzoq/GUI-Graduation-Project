@@ -10,6 +10,7 @@ import Model.Course;
 import Model.DbCall;
 import Model.Levels;
 import Model.Majors;
+import Model.finalTableView;
 import Model.sectionTable;
 import java.io.IOException;
 import java.net.URL;
@@ -62,6 +63,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button deleteButton;
     @FXML
+    private Button editButton;
+    @FXML
     private TableView mainTable;
     @FXML
     private TableColumn sectionNumber;
@@ -77,26 +80,63 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn size;
     @FXML
     private ComboBox semesterComboBox;
+    @FXML
+    private Button refreshButton;
 
+    /**
+     * DELETE button
+     *
+     * @param event
+     */
     @FXML
     private void deleteButtonAction(ActionEvent event) {
-        ObservableList<sectionTable> s =  mainTable.getSelectionModel().getSelectedItems();
-        if(!s.isEmpty()){
+        ObservableList<sectionTable> s = mainTable.getSelectionModel().getSelectedItems();
+        if (!s.isEmpty()) {
             System.out.println(s.get(0).getId());
             int id = s.get(0).getId();
-            mainTable.getItems().removeAll( mainTable.getSelectionModel().getSelectedItems() );
-            int f = call.getExecuteUpdate("DELETE FROM sections WHERE id = '"+id+"'");
-            if(f==-1)new Alert(AlertType.WARNING, "حصل خطا !").show();
-            else new Alert(AlertType.INFORMATION, "تمت العملية بنجاح").show();
-        }else{
+            mainTable.getItems().removeAll(mainTable.getSelectionModel().getSelectedItems());
+            int f = call.getExecuteUpdate("DELETE FROM sections WHERE id = '" + id + "'");
+            if (f == -1) {
+                new Alert(AlertType.WARNING, "حصل خطا !").show();
+            } else {
+                new Alert(AlertType.INFORMATION, "تمت العملية بنجاح").show();
+            }
+        } else {
             new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
         }
-        
     }
-//========================================================================================
-//                               **** Run Algorithm ****    
-//========================================================================================
 
+    /**
+     * EDIT button
+     */
+    @FXML
+    private void editButtonAction(ActionEvent event) throws SQLException {
+        ObservableList<sectionTable> row = mainTable.getSelectionModel().getSelectedItems();
+        if (!row.isEmpty()) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/EditSectionFXML.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                Stage stage = new Stage();
+                EditSectionFXMLController controller = fxmlLoader.getController();
+                controller.setSpechLevel(level, spech, semester, row);
+                stage.setScene(new Scene(root));
+                stage.setMaximized(false);
+                stage.setResizable(false);
+                stage.setTitle("تعديل الشعب");
+                stage.show();
+            } catch (IOException ex) {
+                System.out.println("EDIT SECTION VIEW ERROR");
+            }
+        } else {
+            new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
+        }
+    }
+
+    /**
+     * Run Algorithm
+     *
+     * @param event
+     */
     @FXML
     private void algorithmButtonAction(ActionEvent event) {
         new Alert(AlertType.INFORMATION, "Name, Role and Email fields cannot be empty!").show();
@@ -104,27 +144,58 @@ public class FXMLDocumentController implements Initializable {
     }
 //========================================================================================
 
+    /**
+     * ِADD button
+     *
+     * @param event
+     * @throws SQLException
+     */
     @FXML
     private void addButtonAction(ActionEvent event) throws SQLException {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/addSectionFXML.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
+            Parent root = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             AddSectionFXMLController con = fxmlLoader.getController();
-            con.setSpechLevel(level, spech);
-            stage.setScene(new Scene(root1));
+            con.setSpechLevel(level, spech, semester);
+            stage.setScene(new Scene(root));
             stage.setMaximized(false);
             stage.setResizable(false);
+            stage.setTitle("إضافة شعبة");
             stage.show();
         } catch (IOException ex) {
             System.out.println("Errore........");
         }
     }
 
+    /**
+     * ِADD button
+     *
+     * @param event
+     * @throws SQLException
+     */
     @FXML
-    private void speComboBoxAction(ActionEvent event) {
+    private void refreshButtonAction(ActionEvent event) throws SQLException {
+        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+    }
+
+    @FXML
+    private void emptyButtonAction(ActionEvent event) throws SQLException {
+        setValuesMainTable(0, 0, 0);
+        speCombobox.getSelectionModel().select(-1);
+        levelsComboBox.getSelectionModel().select(-1);
+        semesterComboBox.getSelectionModel().select(-1);
+//          levelsComboBox.getSelectionModel().select(-1);
+    }
+
+    @FXML
+    private void speComboBoxAction(ActionEvent event) throws SQLException {
         levelsComboBox.setDisable(false);
         spech = speCombobox.getSelectionModel().getSelectedIndex();
+        if ((levelsComboBox.getSelectionModel().getSelectedIndex() != -1)
+                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)) {
+            setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+        }
         System.out.println(spech);
     }
 
@@ -134,8 +205,11 @@ public class FXMLDocumentController implements Initializable {
         scedButton.setDisable(false);
         semesterComboBox.setDisable(false);
         level = levelsComboBox.getSelectionModel().getSelectedIndex();
-//        setValuesMainTable((level+1),(spech+1));
-        System.out.println(level);
+        if ((speCombobox.getSelectionModel().getSelectedIndex() != -1)
+                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)) {
+            setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+        }
+        System.out.println("SEMESTER" + semesterComboBox.getSelectionModel().getSelectedIndex());
     }
 
     @FXML
@@ -143,7 +217,21 @@ public class FXMLDocumentController implements Initializable {
         addButton.setDisable(false);
         scedButton.setDisable(false);
         deleteButton.setDisable(false);
+        editButton.setDisable(false);
+        refreshButton.setDisable(false);
         semester = semesterComboBox.getSelectionModel().getSelectedIndex();
+        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+        System.out.println(level);
+    }
+
+    protected void refresh(int level, int spech, int semester) throws SQLException {
+        addButton.setDisable(false);
+        scedButton.setDisable(false);
+        deleteButton.setDisable(false);
+        editButton.setDisable(false);
+        levelsComboBox.getSelectionModel().select(level);
+        speCombobox.getSelectionModel().select(spech);
+        semesterComboBox.getSelectionModel().select(semester);
         setValuesMainTable((level + 1), (spech + 1), (semester + 1));
         System.out.println(level);
     }
@@ -154,7 +242,9 @@ public class FXMLDocumentController implements Initializable {
             setOptionsSpeCombobox();
             setOptionslevelsCombobox();
             setOptionsSemesterComboBox();
+            setOptionsGenderComboBox();
             mainTable.setPlaceholder(new Label("لا يوجد شعب مضافة"));
+            mainTableSectionsTab.setPlaceholder(new Label("لا يوجد شعب مجدولة"));
 
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,6 +303,7 @@ public class FXMLDocumentController implements Initializable {
             data.add(majorsList.get(i).getNickName());
         }
         speCombobox.setItems(data);
+        spechComboBoxSectionsTab.setItems(data);
     }
 
     private void setOptionslevelsCombobox() throws SQLException {
@@ -228,22 +319,30 @@ public class FXMLDocumentController implements Initializable {
             data.add(a.get(i).getNickName());
         }
         levelsComboBox.setItems(data);
+        levelComboBoxSectionsTab.setItems(data);
     }
 
     private void setOptionsSemesterComboBox() throws SQLException {
         ObservableList<String> data = FXCollections.observableArrayList("الفصل الاول", "الفصل الثاني"); //List of String
         semesterComboBox.setItems(data);
+        semesterComboBoxSectionsTab.setItems(data);
     }
 
-    private void setValuesMainTable(int level, int major, int semester) throws SQLException {
+    private void setOptionsGenderComboBox() throws SQLException {
+        ObservableList<String> data = FXCollections.observableArrayList("ذكر", "أنثى"); //List of String
+        // semesterComboBox.setItems(data);
+        genderComboBoxSectionsTab.setItems(data);
+    }
+
+    protected void setValuesMainTable(int level, int major, int semester) throws SQLException {
         System.out.println("smester : " + semester);
         String g = "ذكر";
         ObservableList<sectionTable> data = FXCollections.observableArrayList();
         ResultSet resultSet;
         resultSet = call.getExecuteQuery(
                 "SELECT sections.id,sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' ");
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
+//        ResultSetMetaData rsmd = resultSet.getMetaData();
+//        int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
 //            System.out.println(resultSet.getInt(1)+resultSet.getString(2)+resultSet.getString(3)+resultSet.getString(4)+resultSet.getInt(5)+resultSet.getInt(6));
             if (resultSet.getInt(7) == 1) {
@@ -251,23 +350,9 @@ public class FXMLDocumentController implements Initializable {
             } else {
                 g = "انثى";
             }
-            sectionTable s = new sectionTable(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(6), resultSet.getString(4), resultSet.getString(3), resultSet.getString(5), g);
+            sectionTable s = new sectionTable(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(6), resultSet.getString(4), resultSet.getString(3), resultSet.getString(5), g);
             data.add(s);
-//            for (int i = 1; i <= columnsNumber; i++) {
-//                if (i > 1) {
-//                    System.out.print(",  ");
-//                }
-//                String columnValue = resultSet.getString(i);
-//                System.out.print(columnValue + " " + rsmd.getColumnName(i));
-//            }
-//            System.out.println("");
         }
-//         @FXML private TableColumn sectionNumber = null;
-//    @FXML private TableColumn courseId;
-//    @FXML private TableColumn courseName;
-//    @FXML private TableColumn teacherName;
-//    @FXML private TableColumn gender;
-//    @FXML private TableColumn size;
         mainTable.setItems(data);
         sectionNumber.setCellValueFactory(new PropertyValueFactory<>("sectionNum"));
         courseId.setCellValueFactory(new PropertyValueFactory<>("courseId"));
@@ -275,14 +360,299 @@ public class FXMLDocumentController implements Initializable {
         teacherName.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
         gender.setCellValueFactory(new PropertyValueFactory<>("studentGender"));
         size.setCellValueFactory(new PropertyValueFactory<>("size"));
-//        System.out.println(Arrays.asList(data.toString()));
-//        ObservableList<sectionTable> data = FXCollections.observableArrayList(); //List of String
-//        ArrayList<Levels> a = getLevels(call);
-//        for (int i = 0; i < a.size(); i++) {
-//            System.out.println(a.get(i));
-////            data.add();
-//        }
-//        levelsComboBox.setItems(data);
     }
 
+    /**
+     *
+     * Final Table Tab
+     *
+     */
+    @FXML
+    TableView mainTableSectionsTab;
+    @FXML
+    TableColumn sectionNumberSectionsTab;
+    @FXML
+    TableColumn courseNumberSectionsTab;
+    @FXML
+    TableColumn courseNameSectionsTab;
+    @FXML
+    TableColumn teacherNameSectionsTab;
+    @FXML
+    TableColumn saturdaySectionsTab;
+    @FXML
+    TableColumn sundaySectionsTab;
+    @FXML
+    TableColumn mondaySectionsTab;
+    @FXML
+    TableColumn tusdaySectionsTab;
+    @FXML
+    TableColumn wednesdaySectionsTab;
+    @FXML
+    ComboBox spechComboBoxSectionsTab;
+    @FXML
+    ComboBox levelComboBoxSectionsTab;
+    @FXML
+    ComboBox semesterComboBoxSectionsTab;
+    @FXML
+    ComboBox genderComboBoxSectionsTab;
+    @FXML
+    Button refreshButtonFinalTableTab;
+    @FXML
+    Button emptyButtonFinalTableTab;
+    private int levelSectionsTab, spechSectionsTab, semesterSectionsTab,genderSectionsTab;
+
+    /*
+    private void selectTableLevel() {
+
+    }
+
+    private void selectTableSpech(int index) {
+
+    }
+
+    private void selectTableSemeste() {
+
+    }
+
+    private void selectTableGender() {
+
+    }
+
+    private void selectTableLevelandSpech() {
+
+    }
+
+    private void selectTableLevelandSpechandSemester() {
+
+    }
+
+    private void selectTableLevelandSpechandSemesterandGender() {
+
+    }
+
+    private void selectTableSpechandGender() {
+
+    }
+
+    private void selectTableSpechandSemester() {
+
+    }
+
+    private void selectTableSpechandSemesterandGender() {
+
+    }
+
+    private void selectTableLevelandSemesterandGender() {
+
+    }
+
+    private void selectTableLevelandGender() {
+
+    }
+
+    private void selectTableLevelandSemester() {
+
+    }
+
+    private void selectTableLevelandSpechandGender() {
+
+    }
+
+    private void selectTableSemesterandGender() {
+
+    }
+     */
+    @FXML
+    private void spechComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
+        levelComboBoxSectionsTab.setDisable(false);
+        spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        if (levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
+            finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+        }
+        System.out.println("Spec : " + spech);
+    }
+
+    @FXML
+    private void levelComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
+        semesterComboBoxSectionsTab.setDisable(false);
+        spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
+            finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+        }
+    }
+
+    @FXML
+    private void semesterComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
+        genderComboBoxSectionsTab.setDisable(false);
+        spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
+           finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+        }
+    }
+
+    @FXML
+    private void genderComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
+       spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
+                finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+        }
+        refreshButtonFinalTableTab.setDisable(false);
+        emptyButtonFinalTableTab.setDisable(false);
+        finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+    }
+
+    @FXML
+    private void refreshButtonFinalTableTabAction(ActionEvent event) throws SQLException {
+        spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
+                && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
+            finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+        }
+    }
+
+    @FXML
+    private void emptyButtonFinalTableTabAction(ActionEvent event) throws SQLException {
+        spechComboBoxSectionsTab.getSelectionModel().select(-1);
+        levelComboBoxSectionsTab.getSelectionModel().select(-1);
+        semesterComboBoxSectionsTab.getSelectionModel().select(-1);
+        genderComboBoxSectionsTab.getSelectionModel().select(-1);
+        levelComboBoxSectionsTab.setDisable(true);
+        semesterComboBoxSectionsTab.setDisable(true);
+        genderComboBoxSectionsTab.setDisable(true);
+        refreshButtonFinalTableTab.setDisable(true);
+        emptyButtonFinalTableTab.setDisable(true);
+        finalTableView(0, 0, 0, 0);
+
+    }
+
+    private void finalTableView(int spech, int level, int semester, int gender) throws SQLException {
+        ObservableList<finalTableView> data = FXCollections.observableArrayList();
+        spech++;
+        level++;
+        semester++;
+        gender++;
+        System.out.println(spech + " | " + level + " | " + semester + " | " + gender);
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT final_table.id,courses.name,final_table.timeslots_day_id,final_table.start,final_table.end,sections.section_number,courses.course_number,teachers.name FROM final_table INNER JOIN sections ON sections.id = final_table.section_id INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON teachers.id = final_table.teacher_id WHERE final_table.major_id = '" + spech + "' and final_table.level_number = '" + level + "' and final_table.semester = '" + semester + "' and sections.gender_type='" + gender + "'"
+        );
+        
+        while (resultSet.next()) {
+            System.out.println("ID : " + resultSet.getInt(1)
+                    + " | Course Name : " + resultSet.getString(2)
+                    + " | timeslot : " + resultSet.getInt(3)
+                    + " | start : " + resultSet.getInt(4)
+                    + " | end : " + resultSet.getInt(5)
+                    + " | section number : " + resultSet.getInt(6)
+                    + " | course number : " + resultSet.getString(7)
+                    + " | teacher name : " + resultSet.getString(8));
+            finalTableView row;
+            switch (resultSet.getInt(3)) {
+                case 1:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    data.add(row);
+                    break;
+                case 2:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    data.add(row);
+                    break;
+                case 3:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    data.add(row);
+                    break;
+                case 4:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    data.add(row);
+                    break;
+                case 5:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    data.add(row);
+                    break;
+                case 6:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 7:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 8:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    data.add(row);
+                    break;
+                case 9:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    data.add(row);
+                    break;
+                case 10:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    data.add(row);
+                    break;
+                case 12:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 13:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 14:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    data.add(row);
+                    break;
+                case 15:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    data.add(row);
+                    break;
+                case 16:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    data.add(row);
+                    break;
+                case 17:
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+            }
+            mainTableSectionsTab.setItems(data);
+            sectionNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
+            courseNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseNumber"));
+            courseNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+            teacherNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+            saturdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("saturday"));
+            sundaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("sunday"));
+            mondaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("monday"));
+            tusdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("tusday"));
+            wednesdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
+            saturdaySectionsTab.setStyle("-fx-alignment: CENTER;");
+            sundaySectionsTab.setStyle("-fx-alignment: CENTER;");
+            mondaySectionsTab.setStyle("-fx-alignment: CENTER;");
+            tusdaySectionsTab.setStyle("-fx-alignment: CENTER;");
+            wednesdaySectionsTab.setStyle("-fx-alignment: CENTER;");
+        }
+    }
 }
