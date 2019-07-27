@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import Controller.AddSectionFXMLController;
@@ -41,12 +36,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Flash Tech
- */
 public class FXMLDocumentController implements Initializable {
 
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  NON SCHEDUALIED SECTIONS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    /**
+     * VARIABLES
+     */
     private int level, spech, semester, genderV;
     DbCall call = DbCall.getDbCall();
     ArrayList<Levels> levelsList = new ArrayList<>();
@@ -88,9 +85,7 @@ public class FXMLDocumentController implements Initializable {
     private Button emptyButton;
 
     /**
-     * DELETE button
-     *
-     * @param event
+     * DELETE BUTTON
      */
     @FXML
     private void deleteButtonAction(ActionEvent event) {
@@ -137,22 +132,16 @@ public class FXMLDocumentController implements Initializable {
     }
 
     /**
-     * Run Algorithm
-     *
-     * @param event
+     * ALGORITHM
      */
     @FXML
     private void algorithmButtonAction(ActionEvent event) {
         new Alert(AlertType.INFORMATION, "Name, Role and Email fields cannot be empty!").show();
         System.out.println("Algorithm");
     }
-//========================================================================================
 
     /**
-     * ِADD button
-     *
-     * @param event
-     * @throws SQLException
+     * ADD BUTTON
      */
     @FXML
     private void addButtonAction(ActionEvent event) throws SQLException {
@@ -173,19 +162,19 @@ public class FXMLDocumentController implements Initializable {
     }
 
     /**
-     * ِADD button
-     *
-     * @param event
-     * @throws SQLException
+     * REFRESH BUTTON
      */
     @FXML
     private void refreshButtonAction(ActionEvent event) throws SQLException {
-        setValuesMainTable(level, spech, semester,genderV);
+        setValuesMainTable(level, spech, semester, genderV);
     }
 
+    /**
+     * EMPTING BUTTON
+     */
     @FXML
     private void emptyButtonAction(ActionEvent event) throws SQLException {
-        setValuesMainTable(0, 0, 0,0);
+        setValuesMainTable(0, 0, 0, 0);
         speCombobox.getSelectionModel().select(-1);
         levelsComboBox.getSelectionModel().select(-1);
         semesterComboBox.getSelectionModel().select(-1);
@@ -197,6 +186,9 @@ public class FXMLDocumentController implements Initializable {
         emptyButton.setDisable(true);
     }
 
+    /**
+     * MAJORES COMBOBOX
+     */
     @FXML
     private void speComboBoxAction(ActionEvent event) throws SQLException {
         levelsComboBox.setDisable(false);
@@ -209,6 +201,9 @@ public class FXMLDocumentController implements Initializable {
         System.out.println(spech);
     }
 
+    /**
+     * LEVELS COMBOBOX
+     */
     @FXML
     private void levelsComboBoxAction(ActionEvent event) throws SQLException {
         semesterComboBox.setDisable(false);
@@ -218,9 +213,11 @@ public class FXMLDocumentController implements Initializable {
                 && (genderComboBox.getSelectionModel().getSelectedIndex() != -1)) {
             setValuesMainTable(level, spech, semester, genderV);
         }
-        System.out.println("SEMESTER" + semesterComboBox.getSelectionModel().getSelectedIndex());
     }
 
+    /**
+     * SEMESTER COMBOBOX
+     */
     @FXML
     private void semesterComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
@@ -232,9 +229,11 @@ public class FXMLDocumentController implements Initializable {
                 && (genderComboBox.getSelectionModel().getSelectedIndex() != -1)) {
             setValuesMainTable(level, spech, semester, genderV);
         }
-        System.out.println(level);
     }
 
+    /**
+     * GENDER COMBOBOX
+     */
     @FXML
     private void genderComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
@@ -244,15 +243,12 @@ public class FXMLDocumentController implements Initializable {
         refreshButton.setDisable(false);
         emptyButton.setDisable(false);
         genderV = genderComboBox.getSelectionModel().getSelectedIndex();
-        setValuesMainTable(level, spech, semester,genderV);
+        setValuesMainTable(level, spech, semester, genderV);
     }
 
-    protected void refresh(int level, int spech, int semester) throws SQLException {
-        setValuesMainTable(level, spech, semester,genderV);
-    }
-
-    
-
+    /**
+     * INITIALIZE METHODE
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -268,11 +264,10 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-//========================================================================================
-//                               **** getMajors ****    
-//========================================================================================
+    /**
+     * GET MAJORS METHODE
+     */
     private ArrayList getMajors(DbCall call) throws SQLException {
-
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from majors");
         while (resultSet.next()) {
@@ -284,37 +279,28 @@ public class FXMLDocumentController implements Initializable {
         }
         return majorsList;
     }
-//========================================================================================
-//                               **** getLevels ****    
-//========================================================================================
 
+    /**
+     * GET LEVELS METHODE
+     */
     private ArrayList getLevels(DbCall call) throws SQLException {
-
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from levels");
-
         while (resultSet.next()) {
-
             Levels levels = new Levels();
-
             levels.setId(resultSet.getInt("id"));
             levels.setNickName(resultSet.getString("nickName"));
-
             levelsList.add(levels);
         }
         return levelsList;
     }
 
+    /**
+     * SET OPTIONS TO MAJORS COMBOBOX
+     */
     private void setOptionsSpeCombobox() throws SQLException {
-//        ObservableList<String> options
-//                = FXCollections.observableArrayList(
-//                        "علم حاسوب", "تطوير برمجيات",
-//                        "أنظمة معلومات", "ملتميديا", "حوسبة الهواتف"
-//                );
-//        speCombobox.setItems(options);
         getMajors(call);
-        ObservableList<String> data = FXCollections.observableArrayList(); //List of String
-//        ArrayList<Majors> a = getMajors(call);
+        ObservableList<String> data = FXCollections.observableArrayList();
         for (int i = 0; i < majorsList.size(); i++) {
             System.out.println(majorsList.get(i));
             data.add(majorsList.get(i).getNickName());
@@ -323,12 +309,10 @@ public class FXMLDocumentController implements Initializable {
         spechComboBoxSectionsTab.setItems(data);
     }
 
+    /**
+     * SET OPTIONS TO LEVELS COMBOBOX
+     */
     private void setOptionslevelsCombobox() throws SQLException {
-//        ObservableList<String> options
-//                = FXCollections.observableArrayList(
-//                        "1", "2",
-//                        "3", "4"
-//                );
         ObservableList<String> data = FXCollections.observableArrayList(); //List of String
         ArrayList<Levels> a = getLevels(call);
         for (int i = 0; i < a.size(); i++) {
@@ -339,19 +323,27 @@ public class FXMLDocumentController implements Initializable {
         levelComboBoxSectionsTab.setItems(data);
     }
 
+    /**
+     * SET OPTIONS TO SEMESTER COMBOBOX
+     */
     private void setOptionsSemesterComboBox() throws SQLException {
-        ObservableList<String> data = FXCollections.observableArrayList("الفصل الاول", "الفصل الثاني"); //List of String
+        ObservableList<String> data = FXCollections.observableArrayList("الفصل الاول", "الفصل الثاني");
         semesterComboBox.setItems(data);
         semesterComboBoxSectionsTab.setItems(data);
     }
 
+    /**
+     * SET OPTIONS TO GENDER COMBOBOX
+     */
     private void setOptionsGenderComboBox() throws SQLException {
-        ObservableList<String> data = FXCollections.observableArrayList("ذكر", "أنثى"); //List of String
-        // semesterComboBox.setItems(data);
+        ObservableList<String> data = FXCollections.observableArrayList("ذكر", "أنثى");
         genderComboBox.setItems(data);
         genderComboBoxSectionsTab.setItems(data);
     }
 
+    /**
+     * SET VALUES TO NON SCHEDUALING SECTIONS TABLE
+     */
     protected void setValuesMainTable(int level, int major, int semester, int genderV) throws SQLException {
         level++;
         major++;
@@ -363,10 +355,7 @@ public class FXMLDocumentController implements Initializable {
         ResultSet resultSet;
         resultSet = call.getExecuteQuery(
                 "SELECT sections.id,sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' and sections.gender_type = '" + genderV + "' ");
-//        ResultSetMetaData rsmd = resultSet.getMetaData();
-//        int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
-//            System.out.println(resultSet.getInt(1)+resultSet.getString(2)+resultSet.getString(3)+resultSet.getString(4)+resultSet.getInt(5)+resultSet.getInt(6));
             if (resultSet.getInt(7) == 1) {
                 g = "ذكر";
             } else {
@@ -384,10 +373,14 @@ public class FXMLDocumentController implements Initializable {
         size.setCellValueFactory(new PropertyValueFactory<>("size"));
     }
 
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  NON SCHEDUALED SECTIONS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  SCHEDUALED SECTIONS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
     /**
-     *
-     * Final Table Tab
-     *
+     * SCHEDUALIED SECTIONS TABLE
      */
     @FXML
     TableView mainTableSectionsTab;
@@ -484,6 +477,9 @@ public class FXMLDocumentController implements Initializable {
 
     }
      */
+    /**
+     * MAJORES COMBOBOX ACTION
+     */
     @FXML
     private void spechComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
         levelComboBoxSectionsTab.setDisable(false);
@@ -496,9 +492,11 @@ public class FXMLDocumentController implements Initializable {
                 && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
             finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
         }
-        System.out.println("Spec : " + spech);
     }
 
+    /**
+     * LEVEL COMBOBOX ACTION
+     */
     @FXML
     private void levelComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
         semesterComboBoxSectionsTab.setDisable(false);
@@ -513,6 +511,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    /**
+     * SEMESTER COMBOBOX ACTION
+     */
     @FXML
     private void semesterComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
         genderComboBoxSectionsTab.setDisable(false);
@@ -527,6 +528,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    /**
+     * GENDER COMBOBOX ACTION
+     */
     @FXML
     private void genderComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
         spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
@@ -543,6 +547,9 @@ public class FXMLDocumentController implements Initializable {
         finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
     }
 
+    /**
+     * REFRESH BUTTON ACTION
+     */
     @FXML
     private void refreshButtonFinalTableTabAction(ActionEvent event) throws SQLException {
         spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
@@ -557,6 +564,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    /**
+     * EMTING BUTTON ACTION
+     */
     @FXML
     private void emptyButtonFinalTableTabAction(ActionEvent event) throws SQLException {
         spechComboBoxSectionsTab.getSelectionModel().select(-1);
@@ -572,6 +582,9 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
+    /**
+     * TABLED SECTIONS VIEW
+     */
     private void finalTableView(int spech, int level, int semester, int gender) throws SQLException {
         ObservableList<finalTableView> data = FXCollections.observableArrayList();
         spech++;
@@ -585,14 +598,14 @@ public class FXMLDocumentController implements Initializable {
         );
 
         while (resultSet.next()) {
-            System.out.println("ID : " + resultSet.getInt(1)
-                    + " | Course Name : " + resultSet.getString(2)
-                    + " | timeslot : " + resultSet.getInt(3)
-                    + " | start : " + resultSet.getDouble(4)
-                    + " | end : " + resultSet.getDouble(5)
-                    + " | section number : " + resultSet.getInt(6)
-                    + " | course number : " + resultSet.getString(7)
-                    + " | teacher name : " + resultSet.getString(8));
+//            System.out.println("ID : " + resultSet.getInt(1)
+//                    + " | Course Name : " + resultSet.getString(2)
+//                    + " | timeslot : " + resultSet.getInt(3)
+//                    + " | start : " + resultSet.getDouble(4)
+//                    + " | end : " + resultSet.getDouble(5)
+//                    + " | section number : " + resultSet.getInt(6)
+//                    + " | course number : " + resultSet.getString(7)
+//                    + " | teacher name : " + resultSet.getString(8));
             finalTableView row;
             switch (resultSet.getInt(3)) {
                 case 1:
@@ -677,4 +690,54 @@ public class FXMLDocumentController implements Initializable {
         tusdaySectionsTab.setStyle("-fx-alignment: CENTER;");
         wednesdaySectionsTab.setStyle("-fx-alignment: CENTER;");
     }
+
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  SCHEDUALED SECTIONS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  COURSE TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    /**
+     * VARIABLES
+     */
+    @FXML
+    TableView courseTableCourseTab;
+    @FXML
+    TableColumn courseNameCourseTab;
+    @FXML
+    TableColumn courseNumberCourseTab;
+    @FXML
+    TableColumn courseTypeCourseTab;
+    @FXML
+    TableColumn courseMajorCourseTab;
+    @FXML
+    TableColumn courseLevelCourseTab;
+    @FXML
+    TableColumn courseSemesterCourseTab;
+    @FXML
+    TableColumn courseCHouresCourseTab;
+    @FXML
+    TableColumn courseAHouresCourseTab;
+    @FXML
+    TableColumn courseADivideCourseTab;
+    
+
+    /**
+     * VIEW ALL BUTTON ACTION
+     */
+    @FXML
+    private void viewAllButtonAction(ActionEvent event) throws SQLException {
+        spechComboBoxSectionsTab.getSelectionModel().select(-1);
+        levelComboBoxSectionsTab.getSelectionModel().select(-1);
+        semesterComboBoxSectionsTab.getSelectionModel().select(-1);
+        genderComboBoxSectionsTab.getSelectionModel().select(-1);
+        levelComboBoxSectionsTab.setDisable(true);
+        semesterComboBoxSectionsTab.setDisable(true);
+        genderComboBoxSectionsTab.setDisable(true);
+        refreshButtonFinalTableTab.setDisable(true);
+        emptyButtonFinalTableTab.setDisable(true);
+        finalTableView(0, 0, 0, 0);
+
+    }
+
 }
