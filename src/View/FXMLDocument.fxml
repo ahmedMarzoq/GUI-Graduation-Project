@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="486.0" prefWidth="765.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="486.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.FXMLDocumentController">
     <children>
       <TabPane cacheHint="SCALE" nodeOrientation="RIGHT_TO_LEFT" prefHeight="353.0" prefWidth="527.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -59,6 +59,7 @@
                               <TableColumn fx:id="courseNumberSectionsTab" prefWidth="78.0" text="الرمز" />
                               <TableColumn fx:id="courseNameSectionsTab" prefWidth="155.0" text="اسم المادة" />
                               <TableColumn fx:id="teacherNameSectionsTab" prefWidth="115.0" text="المدرس" />
+                              <TableColumn fx:id="teacherNameSectionsTab1" prefWidth="40.0" text="القاعة" />
                               <TableColumn fx:id="saturdaySectionsTab" prefWidth="70.0" text="السبت" />
                               <TableColumn fx:id="sundaySectionsTab" minWidth="0.0" prefWidth="70.0" text="الاحد" />
                               <TableColumn fx:id="mondaySectionsTab" prefWidth="70.0" text="الاثنين" />

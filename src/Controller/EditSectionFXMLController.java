@@ -84,7 +84,7 @@ public class EditSectionFXMLController implements Initializable {
         int i = call.getExecuteUpdate("UPDATE `sections` SET `course_id`= '" + finalCourseId
                 + "',`major_id`= '" + majorId
                 + "',`teacher_id` = '" + finalTeacherId
-                + "',`gender_type` = '" + (genderId + 1)
+                + "',`gender_type` = '" + (genderId)
                 + "',`section_number` = '" + sectionNumber
                 + "', `size` = '" + sectionSize + "' WHERE `id` = '" + row.get(0).getId() + "'");
         if (i == -1) {

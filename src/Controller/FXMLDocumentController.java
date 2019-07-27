@@ -47,7 +47,7 @@ import javafx.stage.Stage;
  */
 public class FXMLDocumentController implements Initializable {
 
-    private int level, spech, semester;
+    private int level, spech, semester, genderV;
     DbCall call = DbCall.getDbCall();
     ArrayList<Levels> levelsList = new ArrayList<>();
     ArrayList<Majors> majorsList = new ArrayList<>();
@@ -81,7 +81,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ComboBox semesterComboBox;
     @FXML
+    private ComboBox genderComboBox;
+    @FXML
     private Button refreshButton;
+    @FXML
+    private Button emptyButton;
 
     /**
      * DELETE button
@@ -176,16 +180,21 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void refreshButtonAction(ActionEvent event) throws SQLException {
-        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+        setValuesMainTable(level, spech, semester,genderV);
     }
 
     @FXML
     private void emptyButtonAction(ActionEvent event) throws SQLException {
-        setValuesMainTable(0, 0, 0);
+        setValuesMainTable(0, 0, 0,0);
         speCombobox.getSelectionModel().select(-1);
         levelsComboBox.getSelectionModel().select(-1);
         semesterComboBox.getSelectionModel().select(-1);
-//          levelsComboBox.getSelectionModel().select(-1);
+        genderComboBox.getSelectionModel().select(-1);
+        levelsComboBox.setDisable(true);
+        semesterComboBox.setDisable(true);
+        genderComboBox.setDisable(true);
+        refreshButton.setDisable(true);
+        emptyButton.setDisable(true);
     }
 
     @FXML
@@ -193,21 +202,21 @@ public class FXMLDocumentController implements Initializable {
         levelsComboBox.setDisable(false);
         spech = speCombobox.getSelectionModel().getSelectedIndex();
         if ((levelsComboBox.getSelectionModel().getSelectedIndex() != -1)
-                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)) {
-            setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)
+                && (genderComboBox.getSelectionModel().getSelectedIndex() != -1)) {
+            setValuesMainTable(level, spech, semester, genderV);
         }
         System.out.println(spech);
     }
 
     @FXML
     private void levelsComboBoxAction(ActionEvent event) throws SQLException {
-        addButton.setDisable(false);
-        scedButton.setDisable(false);
         semesterComboBox.setDisable(false);
         level = levelsComboBox.getSelectionModel().getSelectedIndex();
         if ((speCombobox.getSelectionModel().getSelectedIndex() != -1)
-                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)) {
-            setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+                && (semesterComboBox.getSelectionModel().getSelectedIndex() != -1)
+                && (genderComboBox.getSelectionModel().getSelectedIndex() != -1)) {
+            setValuesMainTable(level, spech, semester, genderV);
         }
         System.out.println("SEMESTER" + semesterComboBox.getSelectionModel().getSelectedIndex());
     }
@@ -216,25 +225,33 @@ public class FXMLDocumentController implements Initializable {
     private void semesterComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
         scedButton.setDisable(false);
-        deleteButton.setDisable(false);
-        editButton.setDisable(false);
-        refreshButton.setDisable(false);
+        genderComboBox.setDisable(false);
         semester = semesterComboBox.getSelectionModel().getSelectedIndex();
-        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
+        if ((speCombobox.getSelectionModel().getSelectedIndex() != -1)
+                && (levelsComboBox.getSelectionModel().getSelectedIndex() != -1)
+                && (genderComboBox.getSelectionModel().getSelectedIndex() != -1)) {
+            setValuesMainTable(level, spech, semester, genderV);
+        }
         System.out.println(level);
     }
 
-    protected void refresh(int level, int spech, int semester) throws SQLException {
+    @FXML
+    private void genderComboBoxAction(ActionEvent event) throws SQLException {
         addButton.setDisable(false);
         scedButton.setDisable(false);
         deleteButton.setDisable(false);
         editButton.setDisable(false);
-        levelsComboBox.getSelectionModel().select(level);
-        speCombobox.getSelectionModel().select(spech);
-        semesterComboBox.getSelectionModel().select(semester);
-        setValuesMainTable((level + 1), (spech + 1), (semester + 1));
-        System.out.println(level);
+        refreshButton.setDisable(false);
+        emptyButton.setDisable(false);
+        genderV = genderComboBox.getSelectionModel().getSelectedIndex();
+        setValuesMainTable(level, spech, semester,genderV);
     }
+
+    protected void refresh(int level, int spech, int semester) throws SQLException {
+        setValuesMainTable(level, spech, semester,genderV);
+    }
+
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -331,16 +348,21 @@ public class FXMLDocumentController implements Initializable {
     private void setOptionsGenderComboBox() throws SQLException {
         ObservableList<String> data = FXCollections.observableArrayList("ذكر", "أنثى"); //List of String
         // semesterComboBox.setItems(data);
+        genderComboBox.setItems(data);
         genderComboBoxSectionsTab.setItems(data);
     }
 
-    protected void setValuesMainTable(int level, int major, int semester) throws SQLException {
+    protected void setValuesMainTable(int level, int major, int semester, int genderV) throws SQLException {
+        level++;
+        major++;
+        semester++;
+        genderV++;
         System.out.println("smester : " + semester);
         String g = "ذكر";
         ObservableList<sectionTable> data = FXCollections.observableArrayList();
         ResultSet resultSet;
         resultSet = call.getExecuteQuery(
-                "SELECT sections.id,sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' ");
+                "SELECT sections.id,sections.section_number ,courses.name,courses.course_number,teachers.name,sections.size,sections.gender_type FROM sections INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON sections.teacher_id = teachers.id where courses.level_number = '" + level + "' and courses.major_id = '" + major + "' and courses.semester = '" + semester + "' and sections.gender_type = '" + genderV + "' ");
 //        ResultSetMetaData rsmd = resultSet.getMetaData();
 //        int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
@@ -399,7 +421,7 @@ public class FXMLDocumentController implements Initializable {
     Button refreshButtonFinalTableTab;
     @FXML
     Button emptyButtonFinalTableTab;
-    private int levelSectionsTab, spechSectionsTab, semesterSectionsTab,genderSectionsTab;
+    private int levelSectionsTab, spechSectionsTab, semesterSectionsTab, genderSectionsTab;
 
     /*
     private void selectTableLevel() {
@@ -501,20 +523,20 @@ public class FXMLDocumentController implements Initializable {
         if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
                 && levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
                 && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
-           finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+            finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
         }
     }
 
     @FXML
     private void genderComboBoxSectionsTabAction(ActionEvent event) throws SQLException {
-       spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
+        spechSectionsTab = spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
         levelSectionsTab = levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
         semesterSectionsTab = semesterComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
         genderSectionsTab = genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex();
         if (spechComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
                 && levelComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1
                 && genderComboBoxSectionsTab.getSelectionModel().getSelectedIndex() != -1) {
-                finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
+            finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
         }
         refreshButtonFinalTableTab.setDisable(false);
         emptyButtonFinalTableTab.setDisable(false);
@@ -561,76 +583,76 @@ public class FXMLDocumentController implements Initializable {
         resultSet = call.getExecuteQuery(
                 "SELECT final_table.id,courses.name,final_table.timeslots_day_id,final_table.start,final_table.end,sections.section_number,courses.course_number,teachers.name FROM final_table INNER JOIN sections ON sections.id = final_table.section_id INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON teachers.id = final_table.teacher_id WHERE final_table.major_id = '" + spech + "' and final_table.level_number = '" + level + "' and final_table.semester = '" + semester + "' and sections.gender_type='" + gender + "'"
         );
-        
+
         while (resultSet.next()) {
             System.out.println("ID : " + resultSet.getInt(1)
                     + " | Course Name : " + resultSet.getString(2)
                     + " | timeslot : " + resultSet.getInt(3)
-                    + " | start : " + resultSet.getInt(4)
-                    + " | end : " + resultSet.getInt(5)
+                    + " | start : " + resultSet.getDouble(4)
+                    + " | end : " + resultSet.getDouble(5)
                     + " | section number : " + resultSet.getInt(6)
                     + " | course number : " + resultSet.getString(7)
                     + " | teacher name : " + resultSet.getString(8));
             finalTableView row;
             switch (resultSet.getInt(3)) {
                 case 1:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)));
                     data.add(row);
                     break;
                 case 2:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ");
                     data.add(row);
                     break;
                 case 3:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ");
                     data.add(row);
                     break;
                 case 4:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)));
                     data.add(row);
                     break;
                 case 5:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)));
                     data.add(row);
                     break;
                 case 6:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ", " ", " ");
                     data.add(row);
                     break;
                 case 7:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ", " ");
                     data.add(row);
                     break;
                 case 8:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ");
                     data.add(row);
                     break;
                 case 9:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ");
                     data.add(row);
                     break;
                 case 10:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)));
                     data.add(row);
                     break;
                 case 12:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ", " ", " ");
                     data.add(row);
                     break;
                 case 13:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ", " ");
                     data.add(row);
                     break;
                 case 14:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ", " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ", " ");
                     data.add(row);
                     break;
                 case 15:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)), " ");
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)), " ");
                     data.add(row);
                     break;
                 case 16:
-                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getInt(4) + " - " + resultSet.getInt(5)));
+                    row = new finalTableView(resultSet.getInt(1), resultSet.getInt(6), resultSet.getString(2), resultSet.getString(7), resultSet.getString(8), " ", " ", " ", " ", (resultSet.getDouble(4) + " - " + resultSet.getDouble(5)));
                     data.add(row);
                     break;
                 case 17:
@@ -638,21 +660,21 @@ public class FXMLDocumentController implements Initializable {
                     data.add(row);
                     break;
             }
-            mainTableSectionsTab.setItems(data);
-            sectionNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
-            courseNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseNumber"));
-            courseNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-            teacherNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
-            saturdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("saturday"));
-            sundaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("sunday"));
-            mondaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("monday"));
-            tusdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("tusday"));
-            wednesdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
-            saturdaySectionsTab.setStyle("-fx-alignment: CENTER;");
-            sundaySectionsTab.setStyle("-fx-alignment: CENTER;");
-            mondaySectionsTab.setStyle("-fx-alignment: CENTER;");
-            tusdaySectionsTab.setStyle("-fx-alignment: CENTER;");
-            wednesdaySectionsTab.setStyle("-fx-alignment: CENTER;");
         }
+        mainTableSectionsTab.setItems(data);
+        sectionNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("sectionNumber"));
+        courseNumberSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseNumber"));
+        courseNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        teacherNameSectionsTab.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+        saturdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("saturday"));
+        sundaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("sunday"));
+        mondaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("monday"));
+        tusdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("tusday"));
+        wednesdaySectionsTab.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
+        saturdaySectionsTab.setStyle("-fx-alignment: CENTER;");
+        sundaySectionsTab.setStyle("-fx-alignment: CENTER;");
+        mondaySectionsTab.setStyle("-fx-alignment: CENTER;");
+        tusdaySectionsTab.setStyle("-fx-alignment: CENTER;");
+        wednesdaySectionsTab.setStyle("-fx-alignment: CENTER;");
     }
 }
