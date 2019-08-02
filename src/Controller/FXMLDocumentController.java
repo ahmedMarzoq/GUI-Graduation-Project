@@ -2,13 +2,16 @@ package Controller;
 
 import Controller.AddSectionFXMLController;
 import Model.Course;
+import Model.CourseTable;
 import Model.DbCall;
 import Model.FinalRaw;
 import Model.Levels;
 import Model.MajorTable;
 import Model.Majors;
+import Model.OneTeacherTable;
 import Model.Section;
 import Model.StudyTimes;
+import Model.TeacherTable;
 import Model.TimeslotDay;
 import Model.finalTableView;
 import Model.sectionTable;
@@ -93,23 +96,23 @@ public class FXMLDocumentController implements Initializable {
     ArrayList<StudyTimes> dayList;
     ArrayList<StudyTimes> dayListMale;
     ArrayList<StudyTimes> dayListFemale;
-    
+
     ArrayList<Course> courseList;
     ArrayList<Course> courseThreeList;
     ArrayList<Course> courseTwoList;
-    
+
     ArrayList<Section> sectionListMale;
     ArrayList<Section> sectionListFemale;
 
     ArrayList<FinalRaw> finalRawAtherMajorsList;
     ArrayList<FinalRaw> practicalRowListMale;
     ArrayList<FinalRaw> practicalRowListFemale;
-    
+
     int practicaCount = 0;
-    
+
     int step = 0;
     int step2 = 0;
-    
+
     /**
      * Run Algorithm
      *
@@ -117,7 +120,7 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void algorithmButtonAction(ActionEvent event) throws SQLException {
-        
+
         DbCall call = DbCall.getDbCall();
 
         MajorTable major = new MajorTable();
@@ -134,16 +137,16 @@ public class FXMLDocumentController implements Initializable {
         finalRawAtherMajorsList = new ArrayList<>();
 
         // can work  just for this -> 2 2 1 , 1 1 1
-        courseList = getCourses(call, spech+1 , level+1 ,semester+1);
+        courseList = getCourses(call, spech + 1, level + 1, semester + 1);
 
         Collections.shuffle(courseThreeList);
         Collections.shuffle(courseTwoList);
         Collections.shuffle(courseList);
 
         ArrayList<Section> sectionList = null;
-        
-        ArrayList<FinalRaw> rawTableDone = getRawTableDone(call , spech+1 /*major-id*/ , level+1 , semester+1);
-            
+
+        ArrayList<FinalRaw> rawTableDone = getRawTableDone(call, spech + 1 /*major-id*/, level + 1, semester + 1);
+
         if (rawTableDone.size() > 0) {
 
             for (int i = 0; i < rawTableDone.size(); i++) {
@@ -162,20 +165,20 @@ public class FXMLDocumentController implements Initializable {
                                 courseThreeList.remove(j);
                             }
                         }
-                    }else if(course.getActual_hours() == 2 && course.getCan_devide() == 1){
+                    } else if (course.getActual_hours() == 2 && course.getCan_devide() == 1) {
                         for (int j = 0; j < courseTwoList.size(); j++) {
                             if (course.getId() == courseTwoList.get(j).getId()) {
                                 courseTwoList.remove(j);
                             }
                         }
-                    }else{
+                    } else {
                         for (int j = 0; j < courseList.size(); j++) {
                             if (course.getId() == courseList.get(j).getId()) {
                                 courseList.remove(j);
                             }
                         }
                     }
-                }else if (section.getGender_type() == 2) {
+                } else if (section.getGender_type() == 2) {
 
                     majorFemale.getMajorTable().add(rawTableDone.get(i));
 
@@ -187,13 +190,13 @@ public class FXMLDocumentController implements Initializable {
                                 courseThreeList.remove(j);
                             }
                         }
-                    }else if(course.getActual_hours() == 2 && course.getCan_devide() == 1){
+                    } else if (course.getActual_hours() == 2 && course.getCan_devide() == 1) {
                         for (int j = 0; j < courseTwoList.size(); j++) {
                             if (course.getId() == courseTwoList.get(j).getId()) {
                                 courseTwoList.remove(j);
                             }
                         }
-                    }else{
+                    } else {
                         for (int j = 0; j < courseList.size(); j++) {
                             if (course.getId() == courseList.get(j).getId()) {
                                 courseList.remove(j);
@@ -205,7 +208,7 @@ public class FXMLDocumentController implements Initializable {
 
                     for (int j = 0; j < major.getMajorTable().size(); j++) {
 
-                        FinalRaw raw =  major.getMajorTable().get(j);
+                        FinalRaw raw = major.getMajorTable().get(j);
 
                         TimeslotDay timeslotDay = getTimeslotDay(call, raw.getTimeslots_day_id());
 
@@ -215,25 +218,25 @@ public class FXMLDocumentController implements Initializable {
                         studyTimes.setStart(raw.getStartTime());
                         studyTimes.setEnd(raw.getEndTime());
 
-                        for(int s = 0; s < dayList.size(); s++ ){
+                        for (int s = 0; s < dayList.size(); s++) {
 
                             if (dayList.get(s).getTimeslot_id() == timeslotDay.getTimeslot_id()) {
 
-                                if (dayList.get(s).getDay_id() == timeslotDay.getDay_id_o()){
+                                if (dayList.get(s).getDay_id() == timeslotDay.getDay_id_o()) {
 
                                     dayList.remove(s);
 
                                     if (timeslotDay.getDay_id_t() < 8) {
 
                                         for (int js = 0; js < dayList.size(); js++) {
-                                            if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd() ) {
+                                            if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd()) {
                                                 dayList.remove(js);
                                             }
                                         }
 
                                         if (timeslotDay.getDay_id_th() < 8) {
                                             for (int js = 0; js < dayList.size(); js++) {
-                                                if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd() ) {
+                                                if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd()) {
                                                     dayList.remove(js);
                                                 }
                                             }
@@ -241,7 +244,7 @@ public class FXMLDocumentController implements Initializable {
                                     }
 
                                     for (int js = 0; js < dayList.size(); js++) {
-                                        if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd() ) {
+                                        if (dayList.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayList.get(js).getStart() < studyTimes.getEnd()) {
                                             dayList.remove(js);
                                         }
                                     }
@@ -250,11 +253,11 @@ public class FXMLDocumentController implements Initializable {
                         }
                     }
 
-                }else if (section.getGender_type() == 2) {
+                } else if (section.getGender_type() == 2) {
 
                     for (int j = 0; j < majorFemale.getMajorTable().size(); j++) {
 
-                        FinalRaw raw =  majorFemale.getMajorTable().get(j);
+                        FinalRaw raw = majorFemale.getMajorTable().get(j);
 
                         TimeslotDay timeslotDay = getTimeslotDay(call, raw.getTimeslots_day_id());
 
@@ -264,25 +267,25 @@ public class FXMLDocumentController implements Initializable {
                         studyTimes.setStart(raw.getStartTime());
                         studyTimes.setEnd(raw.getEndTime());
 
-                        for(int s = 0; s < dayListFemale.size(); s++ ){
+                        for (int s = 0; s < dayListFemale.size(); s++) {
 
                             if (dayListFemale.get(s).getTimeslot_id() == timeslotDay.getTimeslot_id()) {
 
-                                if (dayListFemale.get(s).getDay_id() == timeslotDay.getDay_id_o()){
+                                if (dayListFemale.get(s).getDay_id() == timeslotDay.getDay_id_o()) {
 
                                     dayListFemale.remove(s);
 
                                     if (timeslotDay.getDay_id_t() < 8) {
 
                                         for (int js = 0; js < dayListFemale.size(); js++) {
-                                            if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd() ) {
+                                            if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd()) {
                                                 dayListFemale.remove(js);
                                             }
                                         }
 
                                         if (timeslotDay.getDay_id_th() < 8) {
                                             for (int js = 0; js < dayListFemale.size(); js++) {
-                                                if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd() ) {
+                                                if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd()) {
                                                     dayListFemale.remove(js);
                                                 }
                                             }
@@ -290,7 +293,7 @@ public class FXMLDocumentController implements Initializable {
                                     }
 
                                     for (int js = 0; js < dayListFemale.size(); js++) {
-                                        if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd() ) {
+                                        if (dayListFemale.get(js).getDay_id() == timeslotDay.getDay_id_t() && dayListFemale.get(js).getStart() < studyTimes.getEnd()) {
                                             dayListFemale.remove(js);
                                         }
                                     }
@@ -299,46 +302,46 @@ public class FXMLDocumentController implements Initializable {
                         }
                     }
                 }
-            } 
+            }
         }
-        if (courseThreeList != null && courseThreeList.size() > 0 ) {
-                
-            for(int i = 0; i < courseThreeList.size() ; i++){
+        if (courseThreeList != null && courseThreeList.size() > 0) {
+
+            for (int i = 0; i < courseThreeList.size(); i++) {
 
                 Course course = courseThreeList.get(i);
 
-                sectionList = getSections(call, course.getId() , spech+1 );
+                sectionList = getSections(call, course.getId(), spech + 1);
                 Collections.shuffle(sectionListMale);
                 Collections.shuffle(sectionListFemale);
 
-                for(int j = 0 ; j < sectionListMale.size(); j++){
+                for (int j = 0; j < sectionListMale.size(); j++) {
 
-                   Section section = sectionListMale.get(j);
-                   FinalRaw raw = getRaw(call, course , section , 1);
+                    Section section = sectionListMale.get(j);
+                    FinalRaw raw = getRaw(call, course, section, 1);
 
-                   if (raw.getTimeslots_day_id() == 0) {
-                       raw.setTimeslots_day_id(17);
-                   }
-                   major.getMajorTable().add(raw);
+                    if (raw.getTimeslots_day_id() == 0) {
+                        raw.setTimeslots_day_id(17);
+                    }
+                    major.getMajorTable().add(raw);
                 }
 
-                for(int j = 0 ; j < sectionListFemale.size(); j++) {
+                for (int j = 0; j < sectionListFemale.size(); j++) {
 
                     if (j == 0) {
                         step = 1;
                     }
 
                     Section section = sectionListFemale.get(j);
-                    FinalRaw raw = getRaw(call, course , section , 2);
+                    FinalRaw raw = getRaw(call, course, section, 2);
 
                     if (raw.getTimeslots_day_id() == 0) {
-                       raw.setTimeslots_day_id(17);
+                        raw.setTimeslots_day_id(17);
                     }
 
                     majorFemale.getMajorTable().add(raw);
 
                     if (j >= sectionListFemale.size()) {
-                       if (step == 1) {
+                        if (step == 1) {
                             for (int t = 0; t < dayListMale.size(); t++) {
                                 dayListFemale.add(dayListMale.get(i));
                                 dayListMale.remove(i);
@@ -348,21 +351,21 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        if (courseTwoList != null && courseTwoList.size() > 0 ) {
-                
-            for(int i = 0; i < courseTwoList.size() ; i++){
+        if (courseTwoList != null && courseTwoList.size() > 0) {
+
+            for (int i = 0; i < courseTwoList.size(); i++) {
 
                 Course course = courseTwoList.get(i);
 
                 // 2  , 1
-                sectionList = getSections(call, course.getId() , spech+1);
+                sectionList = getSections(call, course.getId(), spech + 1);
                 Collections.shuffle(sectionListMale);
                 Collections.shuffle(sectionListFemale);
 
-                for(int j = 0 ; j < sectionListMale.size(); j++){
+                for (int j = 0; j < sectionListMale.size(); j++) {
 
                     Section section = sectionListMale.get(j);
-                    FinalRaw raw = getRaw(call, course , section,1);
+                    FinalRaw raw = getRaw(call, course, section, 1);
 
                     if (raw.getTimeslots_day_id() == 0) {
                         raw.setTimeslots_day_id(17);
@@ -371,23 +374,23 @@ public class FXMLDocumentController implements Initializable {
                     major.getMajorTable().add(raw);
                 }
 
-                for(int j = 0 ; j < sectionListFemale.size(); j++){
+                for (int j = 0; j < sectionListFemale.size(); j++) {
 
                     if (j == 0) {
                         step = 1;
                     }
 
                     Section section = sectionListFemale.get(j);
-                    FinalRaw raw = getRaw(call, course , section , 2);
+                    FinalRaw raw = getRaw(call, course, section, 2);
 
                     if (raw.getTimeslots_day_id() == 0) {
-                       raw.setTimeslots_day_id(17);
+                        raw.setTimeslots_day_id(17);
                     }
 
                     majorFemale.getMajorTable().add(raw);
 
                     if (j >= sectionListFemale.size()) {
-                       if (step == 1) {
+                        if (step == 1) {
                             for (int t = 0; t < dayListMale.size(); t++) {
                                 dayListFemale.add(dayListMale.get(i));
                                 dayListMale.remove(i);
@@ -397,51 +400,51 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        for(int i = 0; i < courseList.size() ; i++) {
-                    
+        for (int i = 0; i < courseList.size(); i++) {
+
             Course course = courseList.get(i);
 
             // 2  , 1
-            sectionList = getSections(call, course.getId() , spech+1);
+            sectionList = getSections(call, course.getId(), spech + 1);
             Collections.shuffle(sectionListMale);
             Collections.shuffle(sectionListFemale);
 
-            for(int j = 0 ; j < sectionListMale.size(); j++) {
+            for (int j = 0; j < sectionListMale.size(); j++) {
 
                 Section section = sectionListMale.get(j);
-                FinalRaw raw = getRaw(call, course , section, 1);
+                FinalRaw raw = getRaw(call, course, section, 1);
 
                 if (course.getType() == 0 && step2 == 0) {
                     practicalRowListMale.add(raw);
                 }
-                
+
                 if (raw.getTimeslots_day_id() == 0) {
                     raw.setTimeslots_day_id(17);
                 }
                 major.getMajorTable().add(raw);
             }
 
-            for(int j = 0 ; j < sectionListFemale.size(); j++){
+            for (int j = 0; j < sectionListFemale.size(); j++) {
 
                 if (j == 0) {
                     step = 1;
                 }
 
                 Section section = sectionListFemale.get(j);
-                FinalRaw raw = getRaw(call, course , section , 2);
+                FinalRaw raw = getRaw(call, course, section, 2);
 
                 if (course.getType() == 0 && step2 == 0) {
                     practicalRowListFemale.add(raw);
                 }
-                
+
                 if (raw.getTimeslots_day_id() == 0) {
-                   raw.setTimeslots_day_id(17);
+                    raw.setTimeslots_day_id(17);
                 }
 
                 majorFemale.getMajorTable().add(raw);
 
                 if (j >= sectionListFemale.size()) {
-                   if (step == 1) {
+                    if (step == 1) {
                         for (int t = 0; t < dayListMale.size(); t++) {
                             dayListFemale.add(dayListMale.get(i));
                             dayListMale.remove(i);
@@ -450,9 +453,9 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        
+
         if (finalRawAtherMajorsList != null && finalRawAtherMajorsList.size() > 0) {
-            for(int i = 0; i < finalRawAtherMajorsList.size() ; i++){
+            for (int i = 0; i < finalRawAtherMajorsList.size(); i++) {
                 FinalRaw finalRaw = finalRawAtherMajorsList.get(i);
                 if (finalRaw.getTimeslots_day_id() == 0) {
                     finalRaw.setTimeslots_day_id(17);
@@ -461,9 +464,8 @@ public class FXMLDocumentController implements Initializable {
             }
         }
 
-        
-        int rsMale =  insertFinalTable(call , major);
-        int rsFemale =  insertFinalTable(call , majorFemale);
+        int rsMale = insertFinalTable(call, major);
+        int rsFemale = insertFinalTable(call, majorFemale);
 
         if (rsMale > -1 && rsFemale > -1) {
             System.out.println("Done");
@@ -471,7 +473,6 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-    
     /**
      * DELETE BUTTON
      */
@@ -518,7 +519,7 @@ public class FXMLDocumentController implements Initializable {
             new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
         }
     }
-    
+
     /**
      * ADD BUTTON
      */
@@ -637,6 +638,12 @@ public class FXMLDocumentController implements Initializable {
             setOptionsGenderComboBox();
             mainTable.setPlaceholder(new Label("لا يوجد شعب مضافة"));
             mainTableSectionsTab.setPlaceholder(new Label("لا يوجد شعب مجدولة"));
+            ResultSet teacherRS;
+            teacherRS = call.getExecuteQuery("SELECT id,name FROM teachers");
+            while (teacherRS.next()) {
+                teachersList.add(teacherRS.getString(2));
+            }
+            teacherComboBoxB.setItems(teachersList);
 
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
@@ -686,6 +693,7 @@ public class FXMLDocumentController implements Initializable {
         }
         speCombobox.setItems(data);
         spechComboBoxSectionsTab.setItems(data);
+        spechComboBoxCoursesTab.setItems(data);
     }
 
     /**
@@ -700,6 +708,7 @@ public class FXMLDocumentController implements Initializable {
         }
         levelsComboBox.setItems(data);
         levelComboBoxSectionsTab.setItems(data);
+        levelComboBoxCoursesTab.setItems(data);
     }
 
     /**
@@ -793,6 +802,8 @@ public class FXMLDocumentController implements Initializable {
     Button refreshButtonFinalTableTab;
     @FXML
     Button emptyButtonFinalTableTab;
+    @FXML
+    Button deleteButtonSectionsTab;
     private int levelSectionsTab, spechSectionsTab, semesterSectionsTab, genderSectionsTab;
 
     /*
@@ -923,6 +934,7 @@ public class FXMLDocumentController implements Initializable {
         }
         refreshButtonFinalTableTab.setDisable(false);
         emptyButtonFinalTableTab.setDisable(false);
+        deleteButtonSectionsTab.setDisable(false);
         finalTableView(spechSectionsTab, levelSectionsTab, semesterSectionsTab, genderSectionsTab);
     }
 
@@ -957,8 +969,19 @@ public class FXMLDocumentController implements Initializable {
         genderComboBoxSectionsTab.setDisable(true);
         refreshButtonFinalTableTab.setDisable(true);
         emptyButtonFinalTableTab.setDisable(true);
+        deleteButtonSectionsTab.setDisable(true);
         finalTableView(0, 0, 0, 0);
+    }
 
+    @FXML
+    private void deleteButtonActionSectionsTab(ActionEvent event) throws SQLException {
+        int deleted = 0;
+        ResultSet rs = call.getExecuteQuery("select id FROM final_table WHERE major_id='" + (spechSectionsTab + 1) + "' AND level_number='" + (levelSectionsTab + 1) + "' AND semester='" + (semesterSectionsTab + 1) + "'");
+        while (rs.next()) {
+            deleted = call.getExecuteUpdate("DELETE FROM `final_table` WHERE id='" + rs.getInt(1) + "'");
+            System.out.println("ID ::: " + rs.getInt(1));
+        }
+        new Alert(AlertType.INFORMATION, "لقد تم حذف" + deleted + "").show();
     }
 
     /**
@@ -1073,11 +1096,9 @@ public class FXMLDocumentController implements Initializable {
     //------------------------------------------------------------------------------------------------------------------------
     //        ---------  END  ---------  SCHEDUALED SECTIONS TABLE ---------
     //------------------------------------------------------------------------------------------------------------------------
-    
     //------------------------------------------------------------------------------------------------------------------------
     //        ---------  START  ---------  COURSE TABLE ---------
     //------------------------------------------------------------------------------------------------------------------------
-    
     /**
      * VARIABLES
      */
@@ -1101,44 +1122,624 @@ public class FXMLDocumentController implements Initializable {
     TableColumn courseAHouresCourseTab;
     @FXML
     TableColumn courseADivideCourseTab;
-    
+    @FXML
+    ComboBox spechComboBoxCoursesTab;
+    @FXML
+    ComboBox levelComboBoxCoursesTab;
+    @FXML
+    Button refreshButtonCoursesTab;
+    @FXML
+    Button emptyButtonCoursesTab;
+    @FXML
+    Button addButtonCourseTab;
+    @FXML
+    Button editButtonCourseTab;
+    @FXML
+    Button deleteButtonCourseTab;
+
+    /**
+     * ADD BUTTON ACTION
+     */
+    @FXML
+    private void addButtonCourseTabAction(ActionEvent event) throws SQLException {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/AddCourseFXML.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            AddCourseFXMLController con = fxmlLoader.getController();
+            con.getMajorAndLevel(spech, level);
+            stage.setScene(new Scene(root));
+            stage.setMaximized(false);
+            stage.setResizable(false);
+            stage.setTitle("إضافة مساق");
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("Errore........");
+        }
+    }
+
+    /**
+     * EDIT BUTTON ACTION
+     */
+    @FXML
+    private void editButtonCourseTabAction(ActionEvent event) throws SQLException {
+        try {
+            ObservableList<CourseTable> row = courseTableCourseTab.getSelectionModel().getSelectedItems();
+            if (!row.isEmpty()) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/EditCourseFXML.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                Stage stage = new Stage();
+                EditCourseFXMLController con = fxmlLoader.getController();
+                con.setRow(spech, level, row);
+                stage.setScene(new Scene(root));
+                stage.setMaximized(false);
+                stage.setResizable(false);
+                stage.setTitle("تعديل مساق");
+                stage.show();
+            } else {
+                new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
+            }
+        } catch (IOException ex) {
+            System.out.println("Errore........");
+        }
+    }
+
+    /**
+     * DELETE BUTTON ACTION
+     */
+    @FXML
+    private void deleteButtonCourseTabAction(ActionEvent event) throws SQLException {
+        ObservableList<CourseTable> s = courseTableCourseTab.getSelectionModel().getSelectedItems();
+        if (!s.isEmpty()) {
+            int id = s.get(0).getId();
+            courseTableCourseTab.getItems().removeAll(courseTableCourseTab.getSelectionModel().getSelectedItems());
+            int f = call.getExecuteUpdate("DELETE FROM courses WHERE id = '" + id + "'");
+            if (f == -1) {
+                new Alert(AlertType.WARNING, "حصل خطا !").show();
+            } else {
+                new Alert(AlertType.INFORMATION, "تمت العملية بنجاح").show();
+            }
+        } else {
+            new Alert(AlertType.WARNING, "يجب أن نختار صفا !!").show();
+        }
+    }
+
+    /**
+     * MAJORES COMBOBOX ACTION
+     */
+    @FXML
+    private void spechComboBoxCoursesTabAction(ActionEvent event) throws SQLException {
+        levelComboBoxCoursesTab.setDisable(false);
+        if (levelComboBoxCoursesTab.getSelectionModel().getSelectedIndex() != -1) {
+            int major = spechComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+            int level = levelComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+            searchCourse(major + 1, level + 1);
+        }
+    }
+
+    /**
+     * LEVELS COMBOBOX ACTION
+     */
+    @FXML
+    private void levelComboBoxCoursesTabAction(ActionEvent event) throws SQLException {
+        refreshButtonCoursesTab.setDisable(false);
+        emptyButtonCoursesTab.setDisable(false);
+        int major = spechComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+        int level = levelComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+        searchCourse(major + 1, level + 1);
+        addButtonCourseTab.setDisable(false);
+        editButtonCourseTab.setDisable(false);
+        deleteButtonCourseTab.setDisable(false);
+    }
+
+    /**
+     * REFRESH BUTTON ACTION
+     */
+    @FXML
+    private void refreshButtonCoursesTabAction(ActionEvent event) throws SQLException {
+        int major = spechComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+        int level = levelComboBoxCoursesTab.getSelectionModel().getSelectedIndex();
+        searchCourse(major + 1, level + 1);
+    }
+
+    /**
+     * EMPTING BUTTON ACTION
+     */
+    @FXML
+    private void emptyButtonCoursesTabAction(ActionEvent event) throws SQLException {
+        spechComboBoxCoursesTab.getSelectionModel().select(-1);
+        levelComboBoxCoursesTab.getSelectionModel().select(-1);
+        levelComboBoxCoursesTab.setDisable(true);
+        refreshButtonCoursesTab.setDisable(true);
+        emptyButtonCoursesTab.setDisable(true);
+        addButtonCourseTab.setDisable(true);
+        editButtonCourseTab.setDisable(true);
+        deleteButtonCourseTab.setDisable(true);
+        searchCourse(-1, -1);
+    }
+
+    /**
+     * VIEW COURSES VIA FILTER
+     */
+    private void searchCourse(int major, int level) throws SQLException {
+        ObservableList<CourseTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT courses.id,courses.name,courses.type,majors.nickName,levels.nickName,courses.semester,courses.course_number,courses.credit_hours,courses.actual_hours,courses.can_devide FROM courses INNER JOIN majors ON majors.id = courses.major_id INNER JOIN levels ON levels.id = courses.level_number WHERE courses.major_id = '" + major + "' AND courses.level_number = '" + level + "'"
+        );
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt(1);
+            String courseName = resultSet.getString(2);
+            String courseType;
+            if (resultSet.getObject(3) == null) {
+                courseType = "  ";
+            } else if (resultSet.getInt(3) == 0) {
+                courseType = "عملي";
+            } else {
+                courseType = "نظري";
+            }
+            System.out.println("TYPE : : : " + courseType);
+            String majorText = resultSet.getString(4);
+            String levelText = resultSet.getString(5);
+            String semester;
+            if (resultSet.getInt(6) == 1) {
+                semester = "الفصل الأول";
+            } else {
+                semester = "الفصل الثاني";
+            }
+            String courseNumber = resultSet.getString(7);
+            int creditHoures = resultSet.getInt(8);
+            int actualHoures = resultSet.getInt(9);
+            String canDevide;
+            if (resultSet.getInt(10) == 0) {
+                canDevide = "لا";
+            } else {
+                canDevide = "نعم";
+            }
+            System.out.println("ID : " + resultSet.getInt(1)
+                    + " | Course Name : " + resultSet.getString(2)
+                    + " | course type : " + resultSet.getInt(3)
+                    + " | major : " + resultSet.getString(4)
+                    + " | level : " + resultSet.getString(5)
+                    + " | semester : " + resultSet.getInt(6)
+                    + " | course number : " + resultSet.getString(7)
+                    + " | cridit houres  : " + resultSet.getInt(8)
+                    + " | actual houres  : " + resultSet.getInt(9)
+                    + " | can devide  : " + resultSet.getInt(10)
+            );
+            CourseTable row = new CourseTable(id, courseName, courseType, majorText, levelText, semester, courseNumber, creditHoures, actualHoures, canDevide);
+            data.add(row);
+        }
+        courseTableCourseTab.setItems(data);
+        courseNameCourseTab.setCellValueFactory(new PropertyValueFactory<>("name"));
+        courseNumberCourseTab.setCellValueFactory(new PropertyValueFactory<>("course_number"));
+        courseTypeCourseTab.setCellValueFactory(new PropertyValueFactory<>("type"));
+        courseMajorCourseTab.setCellValueFactory(new PropertyValueFactory<>("major_id"));
+        courseLevelCourseTab.setCellValueFactory(new PropertyValueFactory<>("level_number"));
+        courseSemesterCourseTab.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        courseCHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("credit_hours"));
+        courseAHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("actual_hours"));
+        courseADivideCourseTab.setCellValueFactory(new PropertyValueFactory<>("can_devide"));
+
+    }
 
     /**
      * VIEW ALL BUTTON ACTION
      */
     @FXML
     private void viewAllButtonAction(ActionEvent event) throws SQLException {
-        spechComboBoxSectionsTab.getSelectionModel().select(-1);
-        levelComboBoxSectionsTab.getSelectionModel().select(-1);
-        semesterComboBoxSectionsTab.getSelectionModel().select(-1);
-        genderComboBoxSectionsTab.getSelectionModel().select(-1);
-        levelComboBoxSectionsTab.setDisable(true);
-        semesterComboBoxSectionsTab.setDisable(true);
-        genderComboBoxSectionsTab.setDisable(true);
-        refreshButtonFinalTableTab.setDisable(true);
-        emptyButtonFinalTableTab.setDisable(true);
-        finalTableView(0, 0, 0, 0);
+        spechComboBoxCoursesTab.getSelectionModel().select(-1);
+        levelComboBoxCoursesTab.getSelectionModel().select(-1);
+        levelComboBoxCoursesTab.setDisable(true);
+        refreshButtonCoursesTab.setDisable(true);
+        emptyButtonCoursesTab.setDisable(true);
+        ObservableList<CourseTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT courses.id,courses.name,courses.type,majors.nickName,levels.nickName,courses.semester,courses.course_number,courses.credit_hours,courses.actual_hours,courses.can_devide FROM courses INNER JOIN majors ON majors.id = courses.major_id INNER JOIN levels ON levels.id = courses.level_number"
+        );
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt(1);
+            String courseName = resultSet.getString(2);
+            String courseType;
+            if (resultSet.getObject(3) == null) {
+                courseType = "  ";
+            } else if (resultSet.getInt(3) == 0) {
+                courseType = "عملي";
+            } else {
+                courseType = "نظري";
+            }
+            System.out.println("TYPE : : : " + courseType);
+            String major = resultSet.getString(4);
+            String level = resultSet.getString(5);
+            String semester;
+            if (resultSet.getInt(6) == 1) {
+                semester = "الفصل الأول";
+            } else {
+                semester = "الفصل الثاني";
+            }
+            String courseNumber = resultSet.getString(7);
+            int creditHoures = resultSet.getInt(8);
+            int actualHoures = resultSet.getInt(9);
+            String canDevide;
+            if (resultSet.getInt(10) == 0) {
+                canDevide = "لا";
+            } else {
+                canDevide = "نعم";
+            }
+//            System.out.println("ID : " + resultSet.getInt(1)
+//                    + " | Course Name : " + resultSet.getString(2)
+//                    + " | course type : " + resultSet.getInt(3)
+//                    + " | major : " + resultSet.getString(4)
+//                    + " | level : " + resultSet.getString(5)
+//                    + " | semester : " + resultSet.getInt(6)
+//                    + " | course number : " + resultSet.getString(7)
+//                    + " | cridit houres  : " + resultSet.getInt(8)
+//                    + " | actual houres  : " + resultSet.getInt(9)
+//                    + " | can devide  : " + resultSet.getInt(10)
+//            );
+            CourseTable row = new CourseTable(id, courseName, courseType, major, level, semester, courseNumber, creditHoures, actualHoures, canDevide);
+            data.add(row);
+        }
+        courseTableCourseTab.setItems(data);
+        courseNameCourseTab.setCellValueFactory(new PropertyValueFactory<>("name"));
+        courseNumberCourseTab.setCellValueFactory(new PropertyValueFactory<>("course_number"));
+        courseTypeCourseTab.setCellValueFactory(new PropertyValueFactory<>("type"));
+        courseMajorCourseTab.setCellValueFactory(new PropertyValueFactory<>("major_id"));
+        courseLevelCourseTab.setCellValueFactory(new PropertyValueFactory<>("level_number"));
+        courseSemesterCourseTab.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        courseCHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("credit_hours"));
+        courseAHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("actual_hours"));
+        courseADivideCourseTab.setCellValueFactory(new PropertyValueFactory<>("can_devide"));
+
+    }
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  COURSE TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  ROOMS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    /**
+     * VARIABLES
+     */
+    @FXML
+    Button viewButtonRoomsTab;
+    @FXML
+    TableView roomsTableRoomsTab;
+    @FXML
+    TableColumn buildingRoomsTab;
+    @FXML
+    TableColumn floorRoomsTab;
+    @FXML
+    TableColumn roomNumberRoomsTab;
+    @FXML
+    TableColumn sizeRoomsTab;
+    @FXML
+    TableColumn typeRoomsTab;
+
+    private void searchRooms() throws SQLException {
+        ObservableList<CourseTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT rooms.id,buildings.building_char,courses.type,majors.nickName,levels.nickName,courses.semester,courses.course_number,courses.credit_hours,courses.actual_hours,courses.can_devide FROM courses INNER JOIN majors ON majors.id = courses.major_id INNER JOIN levels ON levels.id = courses.level_number"
+        );
+
+        while (resultSet.next()) {
+//            System.out.println("ID : " + resultSet.getInt(1)
+//                    + " | Course Name : " + resultSet.getString(2)
+//                    + " | course type : " + resultSet.getInt(3)
+//                    + " | major : " + resultSet.getString(4)
+//                    + " | level : " + resultSet.getString(5)
+//                    + " | semester : " + resultSet.getInt(6)
+//                    + " | course number : " + resultSet.getString(7)
+//                    + " | cridit houres  : " + resultSet.getInt(8)
+//                    + " | actual houres  : " + resultSet.getInt(9)
+//                    + " | can devide  : " + resultSet.getInt(10)
+//            );
+//            CourseTable row = new CourseTable(id, courseName, courseType, major, level, semester, courseNumber, creditHoures, actualHoures, canDevide);
+//            data.add(row);
+        }
+        courseTableCourseTab.setItems(data);
+        courseNameCourseTab.setCellValueFactory(new PropertyValueFactory<>("name"));
+        courseNumberCourseTab.setCellValueFactory(new PropertyValueFactory<>("course_number"));
+        courseTypeCourseTab.setCellValueFactory(new PropertyValueFactory<>("type"));
+        courseMajorCourseTab.setCellValueFactory(new PropertyValueFactory<>("major_id"));
+        courseLevelCourseTab.setCellValueFactory(new PropertyValueFactory<>("level_number"));
+        courseSemesterCourseTab.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        courseCHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("credit_hours"));
+        courseAHouresCourseTab.setCellValueFactory(new PropertyValueFactory<>("actual_hours"));
+        courseADivideCourseTab.setCellValueFactory(new PropertyValueFactory<>("can_devide"));
 
     }
 
     //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  ROOMS TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  TEACHER TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    /**
+     * VARIABLES
+     */
+    @FXML
+    Button viewButtonTeacherTab;
+    @FXML
+    TableView teacherTable;
+    @FXML
+    TableColumn teacherNameColumn;
+    @FXML
+    TableColumn teacherHourseColumn;
+
+    @FXML
+    private void viewButtonTeacherTabAction(ActionEvent event) throws SQLException {
+        ObservableList<TeacherTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT `id`,`houres`,`name` FROM teachers "
+        );
+        while (resultSet.next()) {
+            TeacherTable row = new TeacherTable(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3));
+            data.add(row);
+        }
+        teacherTable.setItems(data);
+        teacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        teacherHourseColumn.setCellValueFactory(new PropertyValueFactory<>("houres"));
+//        System.out.println("ssssssssss");
+    }
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  TEACHER TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  START  ---------  ONE TEACHER TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    @FXML
+    TableView oneTeacherTable;
+    @FXML
+    TableColumn oneTeacherNameColumn;
+    @FXML
+    TableColumn courseNameOneTeacherTab;
+    @FXML
+    TableColumn saturdayOneTeacherTab;
+    @FXML
+    TableColumn sundayOneTeacherTab;
+    @FXML
+    TableColumn mondayOneTeacherTab;
+    @FXML
+    TableColumn tuesdayOneTeacherTab;
+    @FXML
+    TableColumn wednedayOneTeacherTab;
+    @FXML
+    ComboBox teacherComboBoxB;
+    ObservableList<String> teachersList = FXCollections.observableArrayList();
+
+    @FXML
+    private void viewButtonOneTeacherTabAction(ActionEvent event) throws SQLException {
+        ObservableList<OneTeacherTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT courses.name,final_table.timeslots_day_id,final_table.start,final_table.end,teachers.name FROM final_table INNER JOIN sections ON sections.id = final_table.section_id INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON teachers.id = final_table.teacher_id"
+        );
+
+        while (resultSet.next()) {
+            OneTeacherTable row;
+            System.out.println(resultSet.getString(1) + " | " + resultSet.getString(2) + " | " + resultSet.getString(3) + " | " + resultSet.getString(4) + " | " + resultSet.getString(5));
+            switch (resultSet.getInt(2)) {
+                case 1:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 2:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 3:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 4:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 5:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 6:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 7:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 8:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 9:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 10:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 12:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 13:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 14:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 15:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 16:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 17:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+            }
+        }
+
+        for (int i = 0; i < data.size(); i++) {
+            System.out.println(data.get(i).getTeacherName() + " | " + data.get(i).getCourseName() + " | " + data.get(i).getSaturday() + " | " + data.get(i).getSunday() + " | " + data.get(i).getMonday() + " | " + data.get(i).getTuesday() + " | " + data.get(i).getWednesday());
+        }
+        oneTeacherTable.setItems(data);
+
+        oneTeacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+        courseNameOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        saturdayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("saturday"));
+        sundayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("sunday"));
+        mondayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("monday"));
+        tuesdayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("tuesday"));
+        wednedayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
+        saturdayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        sundayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        mondayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        tuesdayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        wednedayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        
+    }
+
+    @FXML
+    private void teacherComboBox(ActionEvent event) throws SQLException {
+
+        ResultSet teacherRSIN;
+        teacherRSIN = call.getExecuteQuery("SELECT id,name FROM teachers");
+        ObservableList<Integer> teachersID = FXCollections.observableArrayList();
+        while(teacherRSIN.next()){
+            teachersID.add(teacherRSIN.getInt(1));
+        }
+        ObservableList<OneTeacherTable> data = FXCollections.observableArrayList();
+        ResultSet resultSet;
+        resultSet = call.getExecuteQuery(
+                "SELECT courses.name,final_table.timeslots_day_id,final_table.start,final_table.end,teachers.name FROM final_table INNER JOIN sections ON sections.id = final_table.section_id INNER JOIN courses ON sections.course_id = courses.id INNER JOIN teachers ON teachers.id = final_table.teacher_id WHERE teachers.id='"+teachersID.get(teacherComboBoxB.getSelectionModel().getSelectedIndex())+"'"
+        );
+        System.out.println("TEACHER ID :: "+teachersID.get(teacherComboBoxB.getSelectionModel().getSelectedIndex()));
+        while (resultSet.next()) {
+            OneTeacherTable row;
+            System.out.println(resultSet.getString(1) + " | " + resultSet.getString(2) + " | " + resultSet.getString(3) + " | " + resultSet.getString(4) + " | " + resultSet.getString(5));
+            switch (resultSet.getInt(2)) {
+                case 1:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 2:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 3:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 4:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 5:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 6:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 7:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 8:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 9:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 10:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 12:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 13:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ", " ");
+                    data.add(row);
+                    break;
+                case 14:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ", " ");
+                    data.add(row);
+                    break;
+                case 15:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)), " ");
+                    data.add(row);
+                    break;
+                case 16:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", (resultSet.getDouble(3) + " - " + resultSet.getDouble(4)));
+                    data.add(row);
+                    break;
+                case 17:
+                    row = new OneTeacherTable(resultSet.getString(5), resultSet.getString(1), " ", " ", " ", " ", " ");
+                    data.add(row);
+                    break;
+            }
+        }
+
+        for (int i = 0; i < data.size(); i++) {
+            System.out.println(data.get(i).getTeacherName() + " | " + data.get(i).getCourseName() + " | " + data.get(i).getSaturday() + " | " + data.get(i).getSunday() + " | " + data.get(i).getMonday() + " | " + data.get(i).getTuesday() + " | " + data.get(i).getWednesday());
+        }
+        oneTeacherTable.setItems(data);
+
+        oneTeacherNameColumn.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+        courseNameOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        saturdayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("saturday"));
+        sundayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("sunday"));
+        mondayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("monday"));
+        tuesdayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("tuesday"));
+        wednedayOneTeacherTab.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
+        saturdayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        sundayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        mondayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        tuesdayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+        wednedayOneTeacherTab.setStyle("-fx-alignment: CENTER;");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------
+    //        ---------  END  ---------  ONE TEACHER TABLE ---------
+    //------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------
     //        ---------  START  ---------  ALGORITHM METHODS ---------
     //------------------------------------------------------------------------------------------------------------------------
-     /**
+    /**
      *
      * Return spesfic Course
      */
-    public  Course getCourse(DbCall call ,int id) throws SQLException {
-      
+    public Course getCourse(DbCall call, int id) throws SQLException {
+
         ResultSet resultSet;
-        
+
         resultSet = call.getExecuteQuery("select * from courses where id=" + id);
 
         if (resultSet != null) {
 
             Course course = new Course();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
 
                 course.setId(resultSet.getInt("id"));
                 course.setName(resultSet.getString("name"));
@@ -1150,26 +1751,26 @@ public class FXMLDocumentController implements Initializable {
             }
             return course;
         }
-        
+
         return null;
     }
-     
+
     /**
      *
      * Return spesfic Section
      */
-    public  Section getSection(DbCall call , int id) throws SQLException {
-        
+    public Section getSection(DbCall call, int id) throws SQLException {
+
         ResultSet resultSet;
-        
+
         resultSet = call.getExecuteQuery("select * from sections where id=" + id);
 
         if (resultSet != null) {
 
             Section section = new Section();
 
-            while(resultSet.next()){
-                
+            while (resultSet.next()) {
+
                 section.setId(resultSet.getInt("id"));
                 section.setCourse_id(resultSet.getInt("course_id"));
                 section.setMajor_id(resultSet.getInt("major_id"));
@@ -1178,28 +1779,28 @@ public class FXMLDocumentController implements Initializable {
                 section.setSection_number(resultSet.getInt("section_number"));
                 section.setSize(resultSet.getInt("size"));
             }
-            
+
             return section;
         }
-        
+
         return null;
     }
 
     /**
      *
      * get All Courses for this Part
-     * 
+     *
      */
-    public  ArrayList getCourses(DbCall call, int major_id, int level_number, int semester) throws SQLException {
-        
+    public ArrayList getCourses(DbCall call, int major_id, int level_number, int semester) throws SQLException {
+
         ResultSet resultSet;
-        resultSet = call.getExecuteQuery("select * from courses where major_id= "+ major_id + " AND level_number = "+ level_number +" AND semester = "+ semester);
+        resultSet = call.getExecuteQuery("select * from courses where major_id= " + major_id + " AND level_number = " + level_number + " AND semester = " + semester);
 
         courseThreeList = new ArrayList<>();
         courseTwoList = new ArrayList<>();
         ArrayList<Course> courseList = new ArrayList<>();
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
 
             Course course = new Course();
 
@@ -1212,41 +1813,41 @@ public class FXMLDocumentController implements Initializable {
             course.setCredit_hours(resultSet.getInt("credit_hours"));
             course.setActual_hours(resultSet.getInt("actual_hours"));
             course.setCan_devide(resultSet.getInt("can_devide"));
-            
+
             if (course.getActual_hours() == 3 && course.getCan_devide() == 1) {
                 courseThreeList.add(course);
                 continue;
-            }else if(course.getActual_hours() == 2 && course.getCan_devide() == 1){
+            } else if (course.getActual_hours() == 2 && course.getCan_devide() == 1) {
                 courseTwoList.add(course);
                 continue;
             }
-            
+
             courseList.add(course);
         }
         return courseList;
     }
- 
+
     /**
-     * 
+     *
      * Get All Section For this Course
      *
-     * @return 
+     * @return
      */
-    public  ArrayList getSections(DbCall call, int courseId, int majorId) throws SQLException{
+    public ArrayList getSections(DbCall call, int courseId, int majorId) throws SQLException {
 
         sectionListMale = new ArrayList<>();
         sectionListFemale = new ArrayList<>();
-        
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from sections where course_id=" + courseId + " AND major_id=" + majorId);
 
         if (resultSet == null) {
             System.out.println("Null");
         }
-        
+
         ArrayList<Section> sectionList = new ArrayList<>();
-        
-        while(resultSet.next()){
+
+        while (resultSet.next()) {
 
             Section section = new Section();
 
@@ -1260,47 +1861,47 @@ public class FXMLDocumentController implements Initializable {
 
             if (section.getGender_type() == 1) {
                 sectionListMale.add(section);
-            }else if (section.getGender_type() == 2) {
-                sectionListFemale.add(section);   
+            } else if (section.getGender_type() == 2) {
+                sectionListFemale.add(section);
             }
         }
         return null;
     }
 
     /**
-     * 
+     *
      * Get All Majors For this Course
      *
-     * @return 
+     * @return
      */
-    public  ArrayList getCourseMajors(DbCall call, int course_id) throws SQLException {
-        
+    public ArrayList getCourseMajors(DbCall call, int course_id) throws SQLException {
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from courses_majors where course_id = " + course_id);
 
         ArrayList<Integer> coursesMajorsList = new ArrayList<>();
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
             coursesMajorsList.add(resultSet.getInt("major_id"));
         }
         return coursesMajorsList;
     }
-    
+
     /**
-     * 
+     *
      * Get specific TimeslotDay
      *
-     * @return 
+     * @return
      */
-    public  TimeslotDay getTimeslotDay(DbCall call, int timeslot_day_id) throws SQLException{
-        
+    public TimeslotDay getTimeslotDay(DbCall call, int timeslot_day_id) throws SQLException {
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from timeslots_days where id = " + timeslot_day_id);
 
         TimeslotDay timeslotDay = new TimeslotDay();
 
-        while(resultSet.next()) {
-          
+        while (resultSet.next()) {
+
             timeslotDay.setId(resultSet.getInt("id"));
             timeslotDay.setTimeslot_id(resultSet.getInt("timeslot_id"));
             timeslotDay.setDay_id_o(resultSet.getInt("day_id_o"));
@@ -1311,22 +1912,20 @@ public class FXMLDocumentController implements Initializable {
         }
         return timeslotDay;
     }
-    
-   
-    
+
     /**
      *
      * Select Timeslot and Days for Course and Section
      *
      */
-    public  ArrayList getTimeslotTwoHour(DbCall call) throws SQLException{
-        
+    public ArrayList getTimeslotTwoHour(DbCall call) throws SQLException {
+
         ResultSet resultSet;
-        
+
         resultSet = call.getExecuteQuery("select * from timeslots_days where timeslot_id = 1 AND day_id_o < 8 AND day_id_t < 8 AND day_id_th=8 AND day_id_f=8 AND day_id_fi=8");
         ArrayList<TimeslotDay> timeslotDayList = new ArrayList<>();
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
 
             TimeslotDay timeslotDay = new TimeslotDay();
 
@@ -1340,23 +1939,23 @@ public class FXMLDocumentController implements Initializable {
 
             timeslotDayList.add(timeslotDay);
         }
-        
+
         return timeslotDayList;
     }
-    
+
     /**
      *
      * Select Timeslot and Days for Course and Section
      *
      */
-    public  ArrayList getTimeslotThreeHour(DbCall call) throws SQLException{
-        
+    public ArrayList getTimeslotThreeHour(DbCall call) throws SQLException {
+
         ResultSet resultSet;
-        
+
         resultSet = call.getExecuteQuery("select * from timeslots_days where (timeslot_id = 1 AND day_id_o < 8 AND day_id_t < 8 AND day_id_th < 8 AND day_id_f = 8 AND day_id_fi = 8 ) OR timeslot_id = 2");
         ArrayList<TimeslotDay> timeslotDayList = new ArrayList<>();
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
 
             TimeslotDay timeslotDay = new TimeslotDay();
 
@@ -1370,23 +1969,23 @@ public class FXMLDocumentController implements Initializable {
 
             timeslotDayList.add(timeslotDay);
         }
-        
+
         return timeslotDayList;
     }
-    
+
     /**
      *
      * Select Timeslot and Days for Course and Section
      *
      */
-    public  ArrayList getTimeslotOneHourButTwoHourActual(DbCall call) throws SQLException{
-        
+    public ArrayList getTimeslotOneHourButTwoHourActual(DbCall call) throws SQLException {
+
         ResultSet resultSet;
-        
+
         resultSet = call.getExecuteQuery("select * from timeslots_days where timeslot_id = 3");
         ArrayList<TimeslotDay> timeslotDayList = new ArrayList<>();
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
 
             TimeslotDay timeslotDay = new TimeslotDay();
 
@@ -1400,26 +1999,25 @@ public class FXMLDocumentController implements Initializable {
 
             timeslotDayList.add(timeslotDay);
         }
-        
+
         return timeslotDayList;
     }
-    
-        
+
     /**
      *
-     *Return All Study Times 
+     * Return All Study Times
      */
-    public void getAllStudyTimes() throws SQLException{
-        
+    public void getAllStudyTimes() throws SQLException {
+
         dayList = new ArrayList<>();
         dayListFemale = new ArrayList<>();
-        
+
         DbCall call = DbCall.getDbCall();
-        
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from studytimes");
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
 
             StudyTimes studyTimes = new StudyTimes();
 
@@ -1433,42 +2031,42 @@ public class FXMLDocumentController implements Initializable {
             dayListFemale.add(studyTimes);
         }
     }
-   
+
     /**
      *
-     * filter to All Study time to get one of them for spesfic timeslot 
+     * filter to All Study time to get one of them for spesfic timeslot
      */
-    public  StudyTimes getStudyTimesForTimeSlotDay(TimeslotDay timeslotDay, Course course, Section section, int sex) throws SQLException{
-        
+    public StudyTimes getStudyTimesForTimeSlotDay(TimeslotDay timeslotDay, Course course, Section section, int sex) throws SQLException {
+
         DbCall call = DbCall.getDbCall();
         boolean flag = false;
-        ArrayList<FinalRaw> teacherStudyTimeList =  getAllFinalTableForOneTeacher(call , section.getTeacher_id());
+        ArrayList<FinalRaw> teacherStudyTimeList = getAllFinalTableForOneTeacher(call, section.getTeacher_id());
 
         if (sex == 1) {
-        
-            for(int i = 0 ; i < dayList.size() ; i++ ){
-                
+
+            for (int i = 0; i < dayList.size(); i++) {
+
                 if (dayList.get(i).getTimeslot_id() == timeslotDay.getTimeslot_id()) {
 
-                    if (dayList.get(i).getDay_id() == timeslotDay.getDay_id_o()){
+                    if (dayList.get(i).getDay_id() == timeslotDay.getDay_id_o()) {
 
                         StudyTimes studyTimes = dayList.get(i);
 
                         if (teacherStudyTimeList.size() > 0) {
-                            
-                            for (int j = 0; j < teacherStudyTimeList.size(); j++) {
-                                
-                                if (teacherStudyTimeList.get(j).getTimeslots_day_id() != 0) {
-                                    TimeslotDay timeslotDayForTeacher = getTimesloteForOneTeacher(call , teacherStudyTimeList.get(j).getTimeslots_day_id());
 
-                                    if (dayList.get(i).getDay_id() == timeslotDayForTeacher.getDay_id_o() 
-                                            && ((teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart()) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart() 
-                                                && teacherStudyTimeList.get(j).getEndTime() == studyTimes.getEnd() ) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getStart() 
-                                                && teacherStudyTimeList.get(j).getEndTime() > studyTimes.getStart()) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getEnd() 
-                                                && teacherStudyTimeList.get(j).getEndTime() >= studyTimes.getEnd()) ) ){
+                            for (int j = 0; j < teacherStudyTimeList.size(); j++) {
+
+                                if (teacherStudyTimeList.get(j).getTimeslots_day_id() != 0) {
+                                    TimeslotDay timeslotDayForTeacher = getTimesloteForOneTeacher(call, teacherStudyTimeList.get(j).getTimeslots_day_id());
+
+                                    if (dayList.get(i).getDay_id() == timeslotDayForTeacher.getDay_id_o()
+                                            && ((teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart())
+                                            || (teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart()
+                                            && teacherStudyTimeList.get(j).getEndTime() == studyTimes.getEnd())
+                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getStart()
+                                            && teacherStudyTimeList.get(j).getEndTime() > studyTimes.getStart())
+                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getEnd()
+                                            && teacherStudyTimeList.get(j).getEndTime() >= studyTimes.getEnd()))) {
                                         flag = true;
                                     }
                                 }
@@ -1483,14 +2081,14 @@ public class FXMLDocumentController implements Initializable {
                         dayList.remove(i);
 
                         for (int j = 0; j < dayList.size(); j++) {
-                            if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_o() 
-                                    && ((dayList.get(j).getStart() == studyTimes.getStart()) 
-                                    || (dayList.get(j).getStart() == studyTimes.getStart() 
-                                        && dayList.get(j).getEnd() == studyTimes.getEnd() ) 
-                                    || (dayList.get(j).getStart() < studyTimes.getStart() 
-                                        && dayList.get(j).getEnd() > studyTimes.getStart()) 
-                                    || (dayList.get(j).getStart() < studyTimes.getEnd() 
-                                        && dayList.get(j).getEnd() >= studyTimes.getEnd()) ) ) {
+                            if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_o()
+                                    && ((dayList.get(j).getStart() == studyTimes.getStart())
+                                    || (dayList.get(j).getStart() == studyTimes.getStart()
+                                    && dayList.get(j).getEnd() == studyTimes.getEnd())
+                                    || (dayList.get(j).getStart() < studyTimes.getStart()
+                                    && dayList.get(j).getEnd() > studyTimes.getStart())
+                                    || (dayList.get(j).getStart() < studyTimes.getEnd()
+                                    && dayList.get(j).getEnd() >= studyTimes.getEnd()))) {
                                 dayList.remove(j);
                             }
                         }
@@ -1498,14 +2096,14 @@ public class FXMLDocumentController implements Initializable {
                         if (timeslotDay.getDay_id_t() < 8) {
 
                             for (int j = 0; j < dayList.size(); j++) { // && dayList.get(j).getStart() < studyTimes.getEnd()
-                                if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_t() && ((dayList.get(j).getStart() == studyTimes.getStart()) || (dayList.get(j).getStart() == studyTimes.getStart() && dayList.get(j).getEnd() == studyTimes.getEnd() ) || (dayList.get(j).getStart() < studyTimes.getStart() && dayList.get(j).getEnd() > studyTimes.getStart()) || (dayList.get(j).getStart() < studyTimes.getEnd() && dayList.get(j).getEnd() >= studyTimes.getEnd()) ) ) {
+                                if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_t() && ((dayList.get(j).getStart() == studyTimes.getStart()) || (dayList.get(j).getStart() == studyTimes.getStart() && dayList.get(j).getEnd() == studyTimes.getEnd()) || (dayList.get(j).getStart() < studyTimes.getStart() && dayList.get(j).getEnd() > studyTimes.getStart()) || (dayList.get(j).getStart() < studyTimes.getEnd() && dayList.get(j).getEnd() >= studyTimes.getEnd()))) {
                                     dayList.remove(j);
                                 }
                             }
 
                             if (timeslotDay.getDay_id_th() < 8) {
                                 for (int j = 0; j < dayList.size(); j++) {
-                                    if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_th() && ((dayList.get(j).getStart() == studyTimes.getStart()) || (dayList.get(j).getStart() == studyTimes.getStart() && dayList.get(j).getEnd() == studyTimes.getEnd() ) || (dayList.get(j).getStart() < studyTimes.getStart() && dayList.get(j).getEnd() > studyTimes.getStart()) || (dayList.get(j).getStart() < studyTimes.getEnd() && dayList.get(j).getEnd() >= studyTimes.getEnd()) )) {
+                                    if (dayList.get(j).getDay_id() == timeslotDay.getDay_id_th() && ((dayList.get(j).getStart() == studyTimes.getStart()) || (dayList.get(j).getStart() == studyTimes.getStart() && dayList.get(j).getEnd() == studyTimes.getEnd()) || (dayList.get(j).getStart() < studyTimes.getStart() && dayList.get(j).getEnd() > studyTimes.getStart()) || (dayList.get(j).getStart() < studyTimes.getEnd() && dayList.get(j).getEnd() >= studyTimes.getEnd()))) {
                                         dayList.remove(j);
                                     }
                                 }
@@ -1515,46 +2113,46 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
             }
-        }else if(sex == 2){
-            
-            for(int i = 0 ; i < dayListFemale.size() ; i++ ){
-            
+        } else if (sex == 2) {
+
+            for (int i = 0; i < dayListFemale.size(); i++) {
+
                 if (dayListFemale.get(i).getTimeslot_id() == timeslotDay.getTimeslot_id()) {
 
-                    if (dayListFemale.get(i).getDay_id() == timeslotDay.getDay_id_o()){
+                    if (dayListFemale.get(i).getDay_id() == timeslotDay.getDay_id_o()) {
 
                         StudyTimes studyTimes = dayListFemale.get(i);
-                        
+
                         if (teacherStudyTimeList.size() > 0) {
                             for (int j = 0; j < teacherStudyTimeList.size(); j++) {
-                                
-                                if (teacherStudyTimeList.get(j).getTimeslots_day_id() != 0) {
-                                    
-                                    TimeslotDay timeslotDayForTeacher = getTimesloteForOneTeacher(call , teacherStudyTimeList.get(j).getTimeslots_day_id());
 
-                                    if (dayListFemale.get(i).getDay_id() == timeslotDayForTeacher.getDay_id_o() 
-                                            && ((teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart()) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart() 
-                                                && teacherStudyTimeList.get(j).getEndTime() == studyTimes.getEnd() ) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getStart() 
-                                                && teacherStudyTimeList.get(j).getEndTime() > studyTimes.getStart()) 
-                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getEnd() 
-                                                && teacherStudyTimeList.get(j).getEndTime() >= studyTimes.getEnd()) ) ){
+                                if (teacherStudyTimeList.get(j).getTimeslots_day_id() != 0) {
+
+                                    TimeslotDay timeslotDayForTeacher = getTimesloteForOneTeacher(call, teacherStudyTimeList.get(j).getTimeslots_day_id());
+
+                                    if (dayListFemale.get(i).getDay_id() == timeslotDayForTeacher.getDay_id_o()
+                                            && ((teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart())
+                                            || (teacherStudyTimeList.get(j).getStartTime() == studyTimes.getStart()
+                                            && teacherStudyTimeList.get(j).getEndTime() == studyTimes.getEnd())
+                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getStart()
+                                            && teacherStudyTimeList.get(j).getEndTime() > studyTimes.getStart())
+                                            || (teacherStudyTimeList.get(j).getStartTime() < studyTimes.getEnd()
+                                            && teacherStudyTimeList.get(j).getEndTime() >= studyTimes.getEnd()))) {
                                         flag = true;
                                     }
                                 }
                             }
                         }
-                        
+
                         if (flag == true) {
                             flag = false;
                             continue;
                         }
-                        
+
                         dayListFemale.remove(i);
-                        
+
                         for (int j = 0; j < dayListFemale.size(); j++) {
-                            if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_o() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd() ) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()) ) ) {
+                            if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_o() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd()) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()))) {
                                 dayListFemale.remove(j);
                             }
                         }
@@ -1562,14 +2160,14 @@ public class FXMLDocumentController implements Initializable {
                         if (timeslotDay.getDay_id_t() < 8) {
 
                             for (int j = 0; j < dayListFemale.size(); j++) {
-                                if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_t() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd() ) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()) )) {
+                                if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_t() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd()) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()))) {
                                     dayListFemale.remove(j);
                                 }
                             }
 
                             if (timeslotDay.getDay_id_th() < 8) {
                                 for (int j = 0; j < dayListFemale.size(); j++) {
-                                    if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_th() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd() ) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()) ) ) {
+                                    if (dayListFemale.get(j).getDay_id() == timeslotDay.getDay_id_th() && ((dayListFemale.get(j).getStart() == studyTimes.getStart()) || (dayListFemale.get(j).getStart() == studyTimes.getStart() && dayListFemale.get(j).getEnd() == studyTimes.getEnd()) || (dayListFemale.get(j).getStart() < studyTimes.getStart() && dayListFemale.get(j).getEnd() > studyTimes.getStart()) || (dayListFemale.get(j).getStart() < studyTimes.getEnd() && dayListFemale.get(j).getEnd() >= studyTimes.getEnd()))) {
                                         dayListFemale.remove(j);
                                     }
                                 }
@@ -1584,20 +2182,20 @@ public class FXMLDocumentController implements Initializable {
     }
 
     /**
-     * 
+     *
      * Get all FinalRaw that done befor for this major
      *
-     * @return 
+     * @return
      */
-    public  ArrayList getRawTableDone(DbCall call, int major_id, int level_number, int semester) throws SQLException{
-                
+    public ArrayList getRawTableDone(DbCall call, int major_id, int level_number, int semester) throws SQLException {
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from final_table where timeslots_day_id != " + 17 + " and major_id = " + major_id + " and semester = " + semester + " and level_number = " + level_number);
 
         ArrayList<FinalRaw> rawTableDoneList = new ArrayList<>();
 
-        while(resultSet.next()) {
-            
+        while (resultSet.next()) {
+
             FinalRaw raw = new FinalRaw();
 
             raw.setSection_id(resultSet.getInt("section_id"));
@@ -1609,25 +2207,25 @@ public class FXMLDocumentController implements Initializable {
             raw.setMajor_id(resultSet.getInt("major_id"));
             raw.setLevel_number(resultSet.getInt("level_number"));
             raw.setSemester(resultSet.getInt("semester"));
-            
+
             rawTableDoneList.add(raw);
         }
-        
+
         if (rawTableDoneList.size() > 0) {
             int rs = -1;
             rs = call.getExecuteUpdate("DELETE FROM `final_table` where major_id = " + major_id);
         }
         return rawTableDoneList;
     }
-    
-     public ArrayList getAllFinalTableForOneTeacher(DbCall call, int teacher_id) throws SQLException {
+
+    public ArrayList getAllFinalTableForOneTeacher(DbCall call, int teacher_id) throws SQLException {
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from final_table where teacher_id = " + teacher_id);
 
         ArrayList<FinalRaw> rawTableDoneForTeacherList = new ArrayList<>();
 
-        while(resultSet.next()) {
-            
+        while (resultSet.next()) {
+
             FinalRaw raw = new FinalRaw();
 
             raw.setSection_id(resultSet.getInt("section_id"));
@@ -1639,22 +2237,22 @@ public class FXMLDocumentController implements Initializable {
             raw.setMajor_id(resultSet.getInt("major_id"));
             raw.setLevel_number(resultSet.getInt("level_number"));
             raw.setSemester(resultSet.getInt("semester"));
-            
+
             rawTableDoneForTeacherList.add(raw);
         }
-        
+
         return rawTableDoneForTeacherList;
     }
-     
-     public TimeslotDay getTimesloteForOneTeacher(DbCall call, int timeslots_day_id) throws SQLException {
-         
+
+    public TimeslotDay getTimesloteForOneTeacher(DbCall call, int timeslots_day_id) throws SQLException {
+
         ResultSet resultSet;
         resultSet = call.getExecuteQuery("select * from timeslots_days where id = " + timeslots_day_id);
 
         TimeslotDay timeslotDay = new TimeslotDay();
 
-        while(resultSet.next()) {
-          
+        while (resultSet.next()) {
+
             timeslotDay.setId(resultSet.getInt("id"));
             timeslotDay.setTimeslot_id(resultSet.getInt("timeslot_id"));
             timeslotDay.setDay_id_o(resultSet.getInt("day_id_o"));
@@ -1665,13 +2263,13 @@ public class FXMLDocumentController implements Initializable {
         }
         return timeslotDay;
     }
-    
+
     /**
      *
      * Return Raw in Final Table
-     * 
+     *
      */
-    public  FinalRaw getRaw(DbCall call, Course course , Section section, int sex) throws SQLException{
+    public FinalRaw getRaw(DbCall call, Course course, Section section, int sex) throws SQLException {
 
         if (step == 1) {
             for (int i = 0; i < dayListMale.size(); i++) {
@@ -1682,121 +2280,30 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        
-        
+
         FinalRaw raw = new FinalRaw();
         raw.setSection_id(section.getId());
 
-        /** 
+        /**
          * get a raw for First Section
-         * 
+         *
          */
-        if(course.getCredit_hours() > 1 && course.getActual_hours() > 1 && course.getCan_devide() == 1){
+        if (course.getCredit_hours() > 1 && course.getActual_hours() > 1 && course.getCan_devide() == 1) {
 
-                if (course.getActual_hours() == 2) {
+            if (course.getActual_hours() == 2) {
 
-                    ArrayList<TimeslotDay> timeslotDayList = getTimeslotTwoHour(call);
-                    Collections.shuffle(timeslotDayList);
+                ArrayList<TimeslotDay> timeslotDayList = getTimeslotTwoHour(call);
+                Collections.shuffle(timeslotDayList);
 
-                    for(int m = 0 ; m < timeslotDayList.size() ; m++){
-                        
-                        TimeslotDay timeslotDay = timeslotDayList.get(m);
-                        StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course , section,sex);
+                for (int m = 0; m < timeslotDayList.size(); m++) {
 
-                        if (day == null) {
-                            continue;
-                        }
-                        
-                        if (step == 0) {
-                            dayListMale.add(day);
-                        }
-                        
-                        raw.setTimeslots_day_id(timeslotDay.getId());
-                        raw.setStartTime(day.getStart());
-                        raw.setEndTime(day.getEnd());
-                        raw.setMajor_id(course.getMajor_id());
-                        raw.setTeacher_id(section.getTeacher_id());
-                        raw.setLevel_number(course.getLevel_number());
-                        raw.setSemester(course.getSemester());
-                        
-                        ArrayList<Integer> coursesMajorsList = getCourseMajors(call,course.getId());
-
-                        if(coursesMajorsList.size() > 0){
-                            for(int i = 0 ; i < coursesMajorsList.size(); i++){
-                                FinalRaw rawMajors = new FinalRaw();                                
-                                rawMajors.setSection_id(section.getId());
-                                rawMajors.setTimeslots_day_id(raw.getTimeslots_day_id());
-                                rawMajors.setStartTime(raw.getStartTime());
-                                rawMajors.setEndTime(raw.getEndTime());
-                                rawMajors.setTeacher_id(section.getTeacher_id());
-                                rawMajors.setMajor_id(coursesMajorsList.get(i));
-                                rawMajors.setLevel_number(raw.getLevel_number());
-                                rawMajors.setSemester(raw.getSemester());
-                                finalRawAtherMajorsList.add(rawMajors);
-                            }
-                        }
-                        break; 
-                    }
-                }
-                if (course.getActual_hours() == 3) {
-
-                    ArrayList<TimeslotDay> timeslotDayThreeList = getTimeslotThreeHour(call);
-                    Collections.shuffle(timeslotDayThreeList);
-                    
-                    for(int m = 0 ; m < timeslotDayThreeList.size() ; m++){
-
-                        TimeslotDay timeslotDay = timeslotDayThreeList.get(m);
-                        StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course , section, sex);
-
-                        if (day == null) {
-                            continue;
-                        }
-                        
-                        if (step == 0) {
-                            dayListMale.add(day);
-                        }
-                        
-                        raw.setTimeslots_day_id(timeslotDay.getId());
-                        raw.setStartTime(day.getStart());
-                        raw.setEndTime(day.getEnd());
-                        raw.setTeacher_id(section.getTeacher_id());
-                        raw.setMajor_id(course.getMajor_id());
-                        raw.setLevel_number(course.getLevel_number());
-                        raw.setSemester(course.getSemester());
-                        
-                        ArrayList<Integer> coursesMajorsList = getCourseMajors(call,course.getId());
-                        
-                        if(coursesMajorsList.size() > 0){
-                            for(int i = 0 ; i < coursesMajorsList.size(); i++){
-                                FinalRaw rawMajors = new FinalRaw();
-                                rawMajors.setSection_id(section.getId());
-                                rawMajors.setTimeslots_day_id(raw.getTimeslots_day_id());
-                                rawMajors.setStartTime(raw.getStartTime());
-                                rawMajors.setEndTime(raw.getEndTime());
-                                rawMajors.setTeacher_id(section.getTeacher_id());
-                                rawMajors.setMajor_id(coursesMajorsList.get(i));
-                                rawMajors.setLevel_number(raw.getLevel_number());
-                                rawMajors.setSemester(raw.getSemester());
-                                finalRawAtherMajorsList.add(rawMajors);
-                            }
-                        }
-                        break;
-                    }
-                }
-            }else if (course.getCredit_hours() >= 0 && course.getActual_hours() > 1 && course.getCan_devide() == 0) {
-
-                ArrayList<TimeslotDay> timeslotDayOneList = getTimeslotOneHourButTwoHourActual(call);
-                Collections.shuffle(timeslotDayOneList);
-
-                for(int m = 0 ; m < timeslotDayOneList.size() ; m++) {
-
-                    TimeslotDay timeslotDay = timeslotDayOneList.get(m);
-                    StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course , section, sex);
+                    TimeslotDay timeslotDay = timeslotDayList.get(m);
+                    StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course, section, sex);
 
                     if (day == null) {
                         continue;
                     }
-                    
+
                     if (step == 0) {
                         dayListMale.add(day);
                     }
@@ -1804,15 +2311,15 @@ public class FXMLDocumentController implements Initializable {
                     raw.setTimeslots_day_id(timeslotDay.getId());
                     raw.setStartTime(day.getStart());
                     raw.setEndTime(day.getEnd());
-                    raw.setTeacher_id(section.getTeacher_id());
                     raw.setMajor_id(course.getMajor_id());
+                    raw.setTeacher_id(section.getTeacher_id());
                     raw.setLevel_number(course.getLevel_number());
                     raw.setSemester(course.getSemester());
 
-                    ArrayList<Integer> coursesMajorsList = getCourseMajors(call,course.getId());
+                    ArrayList<Integer> coursesMajorsList = getCourseMajors(call, course.getId());
 
-                    if(coursesMajorsList.size() > 0){
-                        for(int i = 0 ; i < coursesMajorsList.size(); i++){
+                    if (coursesMajorsList.size() > 0) {
+                        for (int i = 0; i < coursesMajorsList.size(); i++) {
                             FinalRaw rawMajors = new FinalRaw();
                             rawMajors.setSection_id(section.getId());
                             rawMajors.setTimeslots_day_id(raw.getTimeslots_day_id());
@@ -1828,22 +2335,111 @@ public class FXMLDocumentController implements Initializable {
                     break;
                 }
             }
+            if (course.getActual_hours() == 3) {
+
+                ArrayList<TimeslotDay> timeslotDayThreeList = getTimeslotThreeHour(call);
+                Collections.shuffle(timeslotDayThreeList);
+
+                for (int m = 0; m < timeslotDayThreeList.size(); m++) {
+
+                    TimeslotDay timeslotDay = timeslotDayThreeList.get(m);
+                    StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course, section, sex);
+
+                    if (day == null) {
+                        continue;
+                    }
+
+                    if (step == 0) {
+                        dayListMale.add(day);
+                    }
+
+                    raw.setTimeslots_day_id(timeslotDay.getId());
+                    raw.setStartTime(day.getStart());
+                    raw.setEndTime(day.getEnd());
+                    raw.setTeacher_id(section.getTeacher_id());
+                    raw.setMajor_id(course.getMajor_id());
+                    raw.setLevel_number(course.getLevel_number());
+                    raw.setSemester(course.getSemester());
+
+                    ArrayList<Integer> coursesMajorsList = getCourseMajors(call, course.getId());
+
+                    if (coursesMajorsList.size() > 0) {
+                        for (int i = 0; i < coursesMajorsList.size(); i++) {
+                            FinalRaw rawMajors = new FinalRaw();
+                            rawMajors.setSection_id(section.getId());
+                            rawMajors.setTimeslots_day_id(raw.getTimeslots_day_id());
+                            rawMajors.setStartTime(raw.getStartTime());
+                            rawMajors.setEndTime(raw.getEndTime());
+                            rawMajors.setTeacher_id(section.getTeacher_id());
+                            rawMajors.setMajor_id(coursesMajorsList.get(i));
+                            rawMajors.setLevel_number(raw.getLevel_number());
+                            rawMajors.setSemester(raw.getSemester());
+                            finalRawAtherMajorsList.add(rawMajors);
+                        }
+                    }
+                    break;
+                }
+            }
+        } else if (course.getCredit_hours() >= 0 && course.getActual_hours() > 1 && course.getCan_devide() == 0) {
+
+            ArrayList<TimeslotDay> timeslotDayOneList = getTimeslotOneHourButTwoHourActual(call);
+            Collections.shuffle(timeslotDayOneList);
+
+            for (int m = 0; m < timeslotDayOneList.size(); m++) {
+
+                TimeslotDay timeslotDay = timeslotDayOneList.get(m);
+                StudyTimes day = getStudyTimesForTimeSlotDay(timeslotDay, course, section, sex);
+
+                if (day == null) {
+                    continue;
+                }
+
+                if (step == 0) {
+                    dayListMale.add(day);
+                }
+
+                raw.setTimeslots_day_id(timeslotDay.getId());
+                raw.setStartTime(day.getStart());
+                raw.setEndTime(day.getEnd());
+                raw.setTeacher_id(section.getTeacher_id());
+                raw.setMajor_id(course.getMajor_id());
+                raw.setLevel_number(course.getLevel_number());
+                raw.setSemester(course.getSemester());
+
+                ArrayList<Integer> coursesMajorsList = getCourseMajors(call, course.getId());
+
+                if (coursesMajorsList.size() > 0) {
+                    for (int i = 0; i < coursesMajorsList.size(); i++) {
+                        FinalRaw rawMajors = new FinalRaw();
+                        rawMajors.setSection_id(section.getId());
+                        rawMajors.setTimeslots_day_id(raw.getTimeslots_day_id());
+                        rawMajors.setStartTime(raw.getStartTime());
+                        rawMajors.setEndTime(raw.getEndTime());
+                        rawMajors.setTeacher_id(section.getTeacher_id());
+                        rawMajors.setMajor_id(coursesMajorsList.get(i));
+                        rawMajors.setLevel_number(raw.getLevel_number());
+                        rawMajors.setSemester(raw.getSemester());
+                        finalRawAtherMajorsList.add(rawMajors);
+                    }
+                }
+                break;
+            }
+        }
         return raw;
     }
-    
-    public  int insertFinalTable(DbCall call, MajorTable majorTable){
-        
-        // call.getExecuteUpdate("ALTER TABLE final_table AUTO_INCREMENT = 1");
 
+    public int insertFinalTable(DbCall call, MajorTable majorTable) {
+
+        // call.getExecuteUpdate("ALTER TABLE final_table AUTO_INCREMENT = 1");
         int resultSet = -1;
         for (int i = 0; i < majorTable.getMajorTable().size(); i++) {
             FinalRaw raw = majorTable.getMajorTable().get(i);
-            resultSet = call.getExecuteUpdate("INSERT INTO `final_table`(`section_id`, `timeslots_day_id`, `start`, `end`, `teacher_id` , `major_id`, `level_number`, `semester`) VALUES (" + raw.getSection_id()  + "," + raw.getTimeslots_day_id()+ "," + raw.getStartTime() + "," + raw.getEndTime()+ "," + raw.getTeacher_id()+ "," + raw.getMajor_id() + "," + raw.getLevel_number() + "," + raw.getSemester()+")");
+            resultSet = call.getExecuteUpdate("INSERT INTO `final_table`(`section_id`, `timeslots_day_id`, `start`, `end`, `teacher_id` , `major_id`, `level_number`, `semester`) VALUES (" + raw.getSection_id() + "," + raw.getTimeslots_day_id() + "," + raw.getStartTime() + "," + raw.getEndTime() + "," + raw.getTeacher_id() + "," + raw.getMajor_id() + "," + raw.getLevel_number() + "," + raw.getSemester() + ")");
         }
         return resultSet;
     }
     //------------------------------------------------------------------------------------------------------------------------
     //        ---------  END  ---------  ALGORITHM METHODS ---------
     //------------------------------------------------------------------------------------------------------------------------
-    
+
 }

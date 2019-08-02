@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="412.0" prefWidth="372.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="Controller.EditCourseFXMLController">
+   <children>
+      <GridPane alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <Label fx:id="levelLabel" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="276.0" text="التخصص">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+               <padding>
+                  <Insets right="30.0" />
+               </padding>
+            </Label>
+            <Label fx:id="majorLabel" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="243.0" text="المستوى" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+               <padding>
+                  <Insets right="30.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER" prefHeight="30.0" prefWidth="200.0" text="المستوى الدراسي" GridPane.columnIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="30.0" prefWidth="186.0" text="التخصص الدراسي" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.0" minWidth="10.0" prefWidth="210.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="162.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <GridPane minHeight="220.0" prefHeight="200.0" AnchorPane.topAnchor="110.0">
+         <children>
+            <Label alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="105.0" text="الاسم" GridPane.columnIndex="1">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER_RIGHT" layoutX="277.0" layoutY="10.0" prefHeight="52.0" prefWidth="105.0" text="الرمز" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER_RIGHT" layoutX="277.0" layoutY="40.0" prefHeight="52.0" prefWidth="105.0" text="النوع" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER_RIGHT" layoutX="277.0" layoutY="70.0" prefHeight="52.0" prefWidth="105.0" text="عدد الساعات" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER_RIGHT" layoutX="277.0" layoutY="100.0" prefHeight="52.0" prefWidth="105.0" text="ساعات التدريس" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <TextField fx:id="courseName" alignment="CENTER_RIGHT">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </TextField>
+            <ComboBox fx:id="courseType" layoutX="30.0" layoutY="58.0" nodeOrientation="RIGHT_TO_LEFT" prefWidth="250.0" GridPane.rowIndex="2">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <TextField fx:id="courseAhoures" alignment="CENTER_RIGHT" layoutX="30.0" layoutY="18.0" GridPane.rowIndex="4">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </TextField>
+            <Label alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="105.0" text="امكانية التقسيم" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <ComboBox fx:id="courseDevide" layoutX="30.0" layoutY="115.0" nodeOrientation="RIGHT_TO_LEFT" prefWidth="250.0" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <TextField fx:id="courseNumber" alignment="CENTER_RIGHT" layoutX="30.0" layoutY="15.0" GridPane.rowIndex="1">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </TextField>
+            <TextField fx:id="courseCridetHourse" alignment="CENTER_RIGHT" layoutX="30.0" layoutY="49.0" GridPane.rowIndex="3">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </TextField>
+            <Label alignment="CENTER_RIGHT" layoutX="277.0" layoutY="168.0" prefHeight="52.0" prefWidth="105.0" text="الفصل الدراسي" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <ComboBox fx:id="courseSemester" layoutX="30.0" layoutY="171.0" nodeOrientation="RIGHT_TO_LEFT" prefWidth="250.0" GridPane.rowIndex="6">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </ComboBox>
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.0" minWidth="10.0" prefWidth="267.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="105.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="372.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button fx:id="exitButtonAction" mnemonicParsing="false" onAction="#exitButtonAction" prefWidth="100.0" text="إغلاق">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#editButtonAction" prefWidth="100.0" text="تعديل">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

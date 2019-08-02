@@ -12,8 +12,8 @@ public class MyConnection {
     private MyConnection(){}
     
     public Statement getStatement() throws SQLException{
-        
-        connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/timetable_gs", "root" , "");
+        String unicode= "?useUnicode=yes&characterEncoding=UTF-8";
+        connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/timetable_gs"+unicode, "root" , "");
         statement = connect.createStatement();
         
         return statement;

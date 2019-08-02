@@ -71,6 +71,7 @@
                            <children>
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تصدير المعروض" />
                               <Button fx:id="scedButton1" disable="true" mnemonicParsing="false" prefWidth="115.0" text="تصدير الكل" />
+                              <Button fx:id="deleteButtonSectionsTab" disable="true" layoutX="425.0" layoutY="22.0" mnemonicParsing="false" onAction="#deleteButtonActionSectionsTab" prefWidth="115.0" text="حذف الكل" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" layoutX="33.0" layoutY="-12.0" prefHeight="69.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -93,9 +94,9 @@
                      <children>
                         <HBox fx:id="courseTable" alignment="CENTER" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <Button fx:id="addButton1" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
+                              <Button fx:id="addButtonCourseTab" disable="true" mnemonicParsing="false" onAction="#addButtonCourseTabAction" prefWidth="115.0" text="إضافة" />
+                              <Button fx:id="editButtonCourseTab" disable="true" mnemonicParsing="false" onAction="#editButtonCourseTabAction" prefWidth="115.0" text="تعديل" />
+                              <Button fx:id="deleteButtonCourseTab" disable="true" mnemonicParsing="false" onAction="#deleteButtonCourseTabAction" prefWidth="115.0" text="حذف" />
                            </children>
                         </HBox>
                         <TableView fx:id="courseTableCourseTab" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="68.0">
@@ -113,10 +114,10 @@
                         </TableView>
                         <HBox alignment="CENTER" prefHeight="69.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ComboBox fx:id="spechComboBoxSectionsTab1" onAction="#spechComboBoxSectionsTabAction" prefWidth="150.0" promptText="التخصص" />
-                              <ComboBox fx:id="levelComboBoxSectionsTab1" disable="true" onAction="#levelComboBoxSectionsTabAction" prefWidth="150.0" promptText="المستوى" />
-                              <Button fx:id="refreshButtonFinalTableTab1" disable="true" mnemonicParsing="false" onAction="#refreshButtonFinalTableTabAction" text="تحديث" />
-                              <Button fx:id="emptyButtonFinalTableTab1" disable="true" mnemonicParsing="false" onAction="#emptyButtonFinalTableTabAction" text="إفراغ الحقول" />
+                              <ComboBox fx:id="spechComboBoxCoursesTab" onAction="#spechComboBoxCoursesTabAction" prefWidth="150.0" promptText="التخصص" />
+                              <ComboBox fx:id="levelComboBoxCoursesTab" disable="true" onAction="#levelComboBoxCoursesTabAction" prefWidth="150.0" promptText="المستوى" />
+                              <Button fx:id="refreshButtonCoursesTab" disable="true" mnemonicParsing="false" onAction="#refreshButtonCoursesTabAction" text="تحديث" />
+                              <Button fx:id="emptyButtonCoursesTab" disable="true" mnemonicParsing="false" onAction="#emptyButtonCoursesTabAction" text="إفراغ الحقول" />
                               <Button fx:id="viewAllButton" layoutX="562.0" layoutY="32.0" mnemonicParsing="false" onAction="#viewAllButtonAction" text="عرض الكل" />
                            </children>
                         </HBox>
@@ -128,13 +129,18 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="mainTable21" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="800.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Button fx:id="viewButtonRoomsTab" layoutX="562.0" layoutY="32.0" mnemonicParsing="false" onAction="#viewAllButtonAction" text="استعلام" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="roomsTableRoomsTab" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                            <columns>
-                              <TableColumn fx:id="sectionNumber21" prefWidth="75.0" text="المبنى" />
-                              <TableColumn fx:id="courseId21" prefWidth="75.0" text="الطابق" />
-                              <TableColumn fx:id="courseName21" prefWidth="74.0" text="رقم الغرفة" />
-                              <TableColumn fx:id="gender11" prefWidth="113.0" text="السعة " />
-                              <TableColumn fx:id="size11" prefWidth="81.0" text="النوع" />
+                              <TableColumn fx:id="buildingRoomsTab" prefWidth="75.0" text="المبنى" />
+                              <TableColumn fx:id="floorRoomsTab" prefWidth="75.0" text="الطابق" />
+                              <TableColumn fx:id="roomNumberRoomsTab" prefWidth="74.0" text="رقم الغرفة" />
+                              <TableColumn fx:id="sizeRoomsTab" prefWidth="113.0" text="السعة " />
+                              <TableColumn fx:id="typeRoomsTab" prefWidth="81.0" text="النوع" />
                            </columns>
                         </TableView>
                         <HBox alignment="CENTER" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -144,28 +150,6 @@
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
                            </children>
                         </HBox>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="الفترات الدراسية">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <HBox alignment="CENTER" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <children>
-                              <Button fx:id="addButton111" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
-                           </children>
-                        </HBox>
-                        <TableView fx:id="mainTable211" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-                           <columns>
-                              <TableColumn fx:id="sectionNumber211" prefWidth="75.0" text="اليوم" />
-                              <TableColumn fx:id="courseId211" prefWidth="75.0" text="البداية" />
-                              <TableColumn fx:id="courseName211" prefWidth="74.0" text="النهاية" />
-                           </columns>
-                        </TableView>
                      </children>
                   </AnchorPane>
               </content>
@@ -181,57 +165,51 @@
                               <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
                            </children>
                         </HBox>
-                        <TableView fx:id="mainTable212" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                        <TableView fx:id="teacherTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                            <columns>
-                              <TableColumn fx:id="sectionNumber212" prefWidth="75.0" text="الاسم" />
-                              <TableColumn fx:id="courseId212" prefWidth="75.0" text="عدد الساعات" />
+                              <TableColumn fx:id="teacherNameColumn" prefWidth="174.0" text="الاسم" />
+                              <TableColumn fx:id="teacherHourseColumn" minWidth="0.0" prefWidth="90.0" text="عدد الساعات" />
                            </columns>
                         </TableView>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="التخصصات">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="mainTable2121" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-                           <columns>
-                              <TableColumn fx:id="sectionNumber2121" prefWidth="75.0" text="الرمز" />
-                              <TableColumn fx:id="courseId2121" prefWidth="75.0" text="الاسم" />
-                           </columns>
-                        </TableView>
-                        <HBox alignment="CENTER" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="800.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <Button fx:id="addButton1121" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
+                              <Button fx:id="viewButtonTeacherTab" layoutX="562.0" layoutY="32.0" mnemonicParsing="false" onAction="#viewButtonTeacherTabAction" text="استعلام" />
                            </children>
                         </HBox>
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="المستويات">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <Tab text="جدول المدرس">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="mainTable2122" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-                           <columns>
-                              <TableColumn fx:id="sectionNumber2122" prefWidth="75.0" text="الرمز" />
-                              <TableColumn fx:id="courseId2122" prefWidth="75.0" text="الاسم" />
-                           </columns>
-                        </TableView>
                         <HBox alignment="CENTER" prefHeight="49.0" prefWidth="642.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <Button fx:id="addButton1122" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="إضافة" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تعديل" />
-                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="حذف" />
+                              <Button fx:id="addButton1121" disable="true" mnemonicParsing="false" onAction="#addButtonAction" prefWidth="115.0" text="تصدير المحدد" />
+                              <Button disable="true" mnemonicParsing="false" prefWidth="115.0" text="تصدير الكل" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="oneTeacherTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                           <columns>
+                              <TableColumn fx:id="oneTeacherNameColumn" prefWidth="150.0" text="الاسم" />
+                              <TableColumn fx:id="courseNameOneTeacherTab" prefWidth="150.0" text="المادة" />
+                              <TableColumn fx:id="saturdayOneTeacherTab" prefWidth="90.0" text="السبت" />
+                              <TableColumn fx:id="sundayOneTeacherTab" prefWidth="90.0" text="الاحد" />
+                              <TableColumn fx:id="mondayOneTeacherTab" prefWidth="90.0" text="الاثنين" />
+                              <TableColumn fx:id="tuesdayOneTeacherTab" prefWidth="90.0" text="الثلاثاء" />
+                              <TableColumn fx:id="wednedayOneTeacherTab" prefWidth="90.0" text="الاربعاء" />
+                           </columns>
+                        </TableView>
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="800.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <ComboBox fx:id="teacherComboBoxB" onAction="#teacherComboBox" prefWidth="150.0" promptText="المدرس" />
+                              <Button fx:id="viewButtonOneTeacherTab" layoutX="562.0" layoutY="32.0" mnemonicParsing="false" onAction="#viewButtonOneTeacherTabAction" text="عرض الكل" />
                            </children>
                         </HBox>
                      </children>
                   </AnchorPane>
-              </content>
+               </content>
             </Tab>
         </tabs>
       </TabPane>
