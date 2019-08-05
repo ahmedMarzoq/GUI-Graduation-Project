@@ -27,6 +27,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -41,7 +42,7 @@ import javafx.stage.Stage;
 public class AddSectionFXMLController implements Initializable {
 
     DbCall call = DbCall.getDbCall();
-    private int spechValue, levelValue,semesterValue;
+    private int spechValue, levelValue, semesterValue;
     ArrayList<Levels> levelsList = new ArrayList<>();
     ArrayList<Majors> majorsList = new ArrayList<>();
     ArrayList<Teacher> teachersList = new ArrayList<>();
@@ -300,5 +301,12 @@ public class AddSectionFXMLController implements Initializable {
 //            teachersList.add(teacher);
 //        }
 //        return teachersList;
+        if (i != -1) {
+            new Alert(Alert.AlertType.INFORMATION, "تمت الاضافة").show();
+            final Stage stage = (Stage) spech.getScene().getWindow();
+            stage.close();
+        } else {
+            new Alert(Alert.AlertType.ERROR, "حصل خطأ").show();
+        }
     }
 }
